@@ -1,4 +1,4 @@
-<title>Evidência GoHotSite</title>
+<title>Evidência da Carteira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -96,8 +96,8 @@
     color: var(--accent);
   }
 
-  /* ── header ─────────────────────────────── */
-  header { display: flex; flex-direction: column; gap: 10px; }
+  /* ── page header ────────────────────────── */
+  .page-head { display: flex; flex-direction: column; gap: 10px; }
 
   h1 {
     font-family: Archivo, system-ui, sans-serif;
@@ -109,6 +109,13 @@
     text-wrap: balance;
   }
 
+  .lede {
+    max-width: 62ch;
+    color: var(--ink-2);
+    font-size: 15.5px;
+    margin: 0;
+  }
+
   .meta {
     display: flex;
     flex-wrap: wrap;
@@ -118,6 +125,79 @@
     color: var(--ink-3);
   }
   .meta b { color: var(--ink-2); font-weight: 500; }
+
+  /* ── site roster ────────────────────────── */
+  .roster {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .roster-rows { display: flex; flex-direction: column; }
+  .roster-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 22px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .roster-row:last-child { border-bottom: 0; }
+  .roster-row.pending { color: var(--ink-3); }
+  .r-site {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .r-score {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .r-score .from { color: var(--ink-3); }
+  .r-score .to { font-weight: 600; color: var(--ink); }
+  .r-state {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .st-done { background: var(--good-soft); color: var(--good); }
+  .st-wait { background: var(--panel-2); color: var(--ink-3); }
+
+  /* ── site band ──────────────────────────── */
+  .band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+    margin-top: 24px;
+  }
+  .band h2 {
+    font-family: Archivo, system-ui, sans-serif;
+    font-size: clamp(22px, 3.4vw, 30px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .band-meta {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+  }
 
   /* ── hero gauges ────────────────────────── */
   .hero {
@@ -191,7 +271,7 @@
     border-bottom: 1px solid var(--line);
     background: var(--panel-2);
   }
-  .panel-head h2 {
+  .panel-head h3 {
     font-family: Archivo, system-ui, sans-serif;
     font-size: 15px;
     font-weight: 600;
@@ -210,7 +290,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 152px 92px 1fr 92px 84px;
+    grid-template-columns: 168px 96px 1fr 96px 92px;
     align-items: center;
     gap: 18px;
     padding: 15px 22px;
@@ -254,6 +334,7 @@
   .bar { height: 5px; border-radius: 3px; }
   .bar-before { background: var(--bad); opacity: .55; }
   .bar-after { background: var(--accent); }
+  .bar-flat { background: var(--mid); }
 
   .chip {
     justify-self: end;
@@ -267,30 +348,25 @@
     color: var(--accent);
     white-space: nowrap;
   }
+  .chip-flat { background: var(--mid-soft); color: var(--mid); }
 
   /* ── CLS band ───────────────────────────── */
   .cls { padding: 26px 22px 24px; display: flex; flex-direction: column; gap: 18px; }
 
-  .cls-top {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 10px 28px;
-  }
   .cls-big {
     font-family: Archivo, system-ui, sans-serif;
     font-weight: 700;
-    font-size: clamp(40px, 8vw, 68px);
+    font-size: clamp(36px, 7vw, 60px);
     letter-spacing: -.04em;
     line-height: .95;
     font-variant-numeric: tabular-nums;
     display: flex;
     align-items: baseline;
     gap: 14px;
+    flex-wrap: wrap;
   }
   .cls-arrow { font-size: .5em; color: var(--ink-3); font-weight: 500; }
 
-  .scale { display: flex; flex-direction: column; gap: 9px; }
   .scale-bar {
     position: relative;
     height: 12px;
@@ -299,19 +375,20 @@
     overflow: hidden;
   }
   .scale-fill { position: absolute; inset-block: 0; left: 0; border-radius: 2px; }
-  .scale-marks { position: relative; height: 16px; }
+  .scale-marks { position: relative; height: 30px; }
   .mark {
     position: absolute;
     top: 0;
     transform: translateX(-50%);
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 10px;
-    letter-spacing: .08em;
+    letter-spacing: .06em;
     text-transform: uppercase;
     color: var(--ink-3);
     white-space: nowrap;
   }
-  .scale-row { display: grid; grid-template-columns: 84px 1fr; gap: 16px; align-items: center; }
+  .mark.left-edge { transform: none; }
+  .scale-row { display: grid; grid-template-columns: 92px 1fr; gap: 16px; align-items: center; }
   .scale-lab {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 11px;
@@ -323,7 +400,7 @@
   /* ── stat strip ─────────────────────────── */
   .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
@@ -353,6 +430,26 @@
     color: var(--ink-3);
   }
 
+  /* ── note ───────────────────────────────── */
+  .note {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--mid);
+    border-radius: 4px;
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .note-t {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .note p { margin: 0; color: var(--ink-2); font-size: 14.5px; max-width: 74ch; }
+
   footer {
     border-top: 1px solid var(--line);
     padding-top: 18px;
@@ -365,7 +462,7 @@
     gap: 2px;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 760px) {
     .hero { grid-template-columns: 1fr; gap: 20px; padding: 28px 20px; }
     .delta { flex-direction: row; align-items: baseline; gap: 10px; }
     .row {
@@ -378,6 +475,9 @@
     .val { text-align: left; }
     .val-after { text-align: right; }
     .chip { grid-column: 2; }
+    .roster-row { grid-template-columns: 1fr auto; }
+    .r-state { grid-column: 2; }
+    .scale-row { grid-template-columns: 1fr; gap: 6px; }
   }
 
   .anim { animation: rise .5s cubic-bezier(.2, .7, .3, 1) both; }
@@ -389,17 +489,77 @@
 
 <div class="wrap">
 
-  <header class="anim">
+  <header class="page-head anim">
     <div class="eyebrow">Auditoria Lighthouse · antes e depois</div>
-    <h1>apps.gohotsite.com</h1>
+    <h1>Evidência da Carteira</h1>
+    <p class="lede">
+      Dez sites WordPress monetizados com a mesma stack de anúncios. Cada correção
+      abaixo foi aplicada em produção e <strong>medida</strong> — mediana de 11 a 12
+      auditorias com cache de borda quente, nunca uma rodada isolada. Nenhum anúncio
+      saiu do ar, nenhum inventário foi reduzido.
+    </p>
     <div class="meta">
       <span><b>Lighthouse</b> 13.4.1 · mobile</span>
-      <span><b>Coleta</b> 11/08/2026 → 26/08/2026</span>
-      <span><b>Amostra</b> mediana de 12 auditorias</span>
+      <span><b>Período</b> 11/08 → 27/08/2026</span>
+      <span><b>Sites encerrados</b> 2 de 10</span>
     </div>
   </header>
 
-  <section class="hero anim" style="animation-delay:.06s">
+  <section class="stats anim" style="animation-delay:.06s">
+    <div class="stat">
+      <span class="stat-n is-good">2 / 10</span>
+      <span class="stat-l">sites encerrados</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">+46</span>
+      <span class="stat-l">pontos em média</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n is-good">2 / 2</span>
+      <span class="stat-l">CLS eliminado</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">13 / 19</span>
+      <span class="stat-l">itens encerrados</span>
+    </div>
+  </section>
+
+  <section class="roster anim" style="animation-delay:.1s">
+    <div class="panel-head">
+      <h3>Situação da carteira</h3>
+      <span>performance · antes &rarr; depois</span>
+    </div>
+    <div class="roster-rows">
+      <div class="roster-row">
+        <span class="r-site">apps.gohotsite.com</span>
+        <span class="r-score"><span class="from">21</span> &rarr; <span class="to">68</span></span>
+        <span class="r-state st-done">encerrado</span>
+      </div>
+      <div class="roster-row">
+        <span class="r-site">zattasports.com</span>
+        <span class="r-score"><span class="from">28</span> &rarr; <span class="to">73</span></span>
+        <span class="r-state st-done">encerrado</span>
+      </div>
+      <div class="roster-row pending">
+        <span class="r-site">apps.bencaodiaria.club · apps.meucreditodigital.com · gohotsite.com · guiafinancas.com.br · judgeapps.com · news.judgeapps.com · shop.gohotsite.com · suabencao.com</span>
+        <span class="r-score">&mdash;</span>
+        <span class="r-state st-wait">na fila</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SITE 1 ══════════ -->
+
+  <div class="band anim" style="animation-delay:.14s">
+    <h2>apps.gohotsite.com</h2>
+    <div class="band-meta">
+      <span>11/08 &rarr; 26/08/2026</span>
+      <span>mediana de 12 auditorias</span>
+      <span>7 de 9 itens encerrados</span>
+    </div>
+  </div>
+
+  <section class="hero anim" style="animation-delay:.16s">
     <div class="gauge">
       <svg viewBox="0 0 140 140" role="img" aria-label="Performance antes: 21 de 100">
         <circle class="gauge-track" cx="70" cy="70" r="58" fill="none" stroke-width="10"></circle>
@@ -428,9 +588,9 @@
     </div>
   </section>
 
-  <section class="panel anim" style="animation-delay:.12s">
+  <section class="panel anim" style="animation-delay:.18s">
     <div class="panel-head">
-      <h2>Core Web Vitals</h2>
+      <h3>Core Web Vitals</h3>
       <span>menor é melhor</span>
     </div>
     <div class="rows">
@@ -494,45 +654,9 @@
     </div>
   </section>
 
-  <section class="panel anim" style="animation-delay:.16s">
-    <div class="cls">
-      <div class="eyebrow">CLS contra os limites do Google</div>
-      <div class="cls-top">
-        <div class="cls-big">
-          <span class="is-bad">0,709</span>
-          <span class="cls-arrow">&rarr;</span>
-          <span class="is-good">0,001</span>
-        </div>
-      </div>
-
-      <div class="scale-row">
-        <div class="scale-lab">Antes</div>
-        <div class="scale-bar">
-          <div class="scale-fill" style="width:100%;background:var(--bad)"></div>
-        </div>
-      </div>
-
-      <div class="scale-row">
-        <div class="scale-lab">Depois</div>
-        <div class="scale-bar">
-          <div class="scale-fill" style="width:0.14%;min-width:2px;background:var(--good)"></div>
-        </div>
-      </div>
-
-      <div class="scale-row">
-        <div class="scale-lab"></div>
-        <div class="scale-marks">
-          <span class="mark" style="left:14.1%">0,10 bom</span>
-          <span class="mark" style="left:35.3%">0,25 ruim</span>
-          <span class="mark" style="left:100%">0,709</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="panel anim" style="animation-delay:.2s">
     <div class="panel-head">
-      <h2>Peso, bloqueio e boas práticas</h2>
+      <h3>Peso, bloqueio e boas práticas</h3>
       <span>antes &rarr; depois</span>
     </div>
     <div class="rows">
@@ -540,7 +664,7 @@
       <div class="row">
         <div class="m-name">
           <span class="m-code">JS + CSS próprio</span>
-          <span class="m-desc">Transferido</span>
+          <span class="m-desc">Transferido por pageview</span>
         </div>
         <div class="val val-before">98 KiB</div>
         <div class="track">
@@ -554,7 +678,7 @@
       <div class="row">
         <div class="m-name">
           <span class="m-code">CSS bloqueante</span>
-          <span class="m-desc">Folhas no &lt;head&gt;</span>
+          <span class="m-desc">Folhas que travam a exibição</span>
         </div>
         <div class="val val-before">6</div>
         <div class="track">
@@ -582,7 +706,7 @@
     </div>
   </section>
 
-  <section class="stats anim" style="animation-delay:.24s">
+  <section class="stats anim" style="animation-delay:.21s">
     <div class="stat">
       <span class="stat-n is-good">709&times;</span>
       <span class="stat-l">CLS</span>
@@ -605,10 +729,299 @@
     </div>
   </section>
 
+  <!-- ══════════ SITE 2 ══════════ -->
+
+  <div class="band anim" style="animation-delay:.22s">
+    <h2>zattasports.com</h2>
+    <div class="band-meta">
+      <span>11/08 &rarr; 27/08/2026</span>
+      <span>mediana de 11 auditorias</span>
+      <span>6 de 7 itens de performance encerrados</span>
+    </div>
+  </div>
+
+  <section class="hero anim" style="animation-delay:.24s">
+    <div class="gauge">
+      <svg viewBox="0 0 140 140" role="img" aria-label="Performance antes: 28 de 100">
+        <circle class="gauge-track" cx="70" cy="70" r="58" fill="none" stroke-width="10"></circle>
+        <circle class="gauge-arc" cx="70" cy="70" r="58" fill="none" stroke-width="10"
+                stroke="currentColor" stroke-dasharray="102.0 364.4" style="color:var(--bad)"></circle>
+        <text x="70" y="70" text-anchor="middle" dominant-baseline="central"
+              class="gauge-num is-bad" fill="currentColor">28</text>
+      </svg>
+      <div class="gauge-cap">Performance · antes</div>
+    </div>
+
+    <div class="delta">
+      <div class="delta-x">2,6&times;</div>
+      <div class="delta-lab">+45 pontos</div>
+    </div>
+
+    <div class="gauge">
+      <svg viewBox="0 0 140 140" role="img" aria-label="Performance depois: 73 de 100">
+        <circle class="gauge-track" cx="70" cy="70" r="58" fill="none" stroke-width="10"></circle>
+        <circle class="gauge-arc" cx="70" cy="70" r="58" fill="none" stroke-width="10"
+                stroke="currentColor" stroke-dasharray="266.0 364.4" style="color:var(--mid)"></circle>
+        <text x="70" y="70" text-anchor="middle" dominant-baseline="central"
+              class="gauge-num is-mid" fill="currentColor">73</text>
+      </svg>
+      <div class="gauge-cap">Performance · depois</div>
+    </div>
+  </section>
+
+  <section class="panel anim" style="animation-delay:.26s">
+    <div class="panel-head">
+      <h3>Core Web Vitals</h3>
+      <span>menor é melhor</span>
+    </div>
+    <div class="rows">
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">CLS</span>
+          <span class="m-desc">Instabilidade visual</span>
+        </div>
+        <div class="val val-before">0,303</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:1px"></div>
+        </div>
+        <div class="val val-after is-good">0,000</div>
+        <div class="chip">zerado</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">LCP</span>
+          <span class="m-desc">Carregamento</span>
+        </div>
+        <div class="val val-before">11,7 s</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:19.1%"></div>
+        </div>
+        <div class="val val-after">2,24 s</div>
+        <div class="chip">5,2&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">FCP</span>
+          <span class="m-desc">Primeiro conteúdo</span>
+        </div>
+        <div class="val val-before">3,40 s</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:55.6%"></div>
+        </div>
+        <div class="val val-after">1,89 s</div>
+        <div class="chip">1,8&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">TBT</span>
+          <span class="m-desc">Travado ao toque · JS de terceiro</span>
+        </div>
+        <div class="val val-before">670 ms</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:93%"></div>
+          <div class="bar bar-flat" style="width:100%"></div>
+        </div>
+        <div class="val val-after is-mid">723 ms</div>
+        <div class="chip chip-flat">+8%</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="panel anim" style="animation-delay:.28s">
+    <div class="panel-head">
+      <h3>Peso, bloqueio e SEO</h3>
+      <span>antes &rarr; depois</span>
+    </div>
+    <div class="rows">
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Imagens próprias</span>
+          <span class="m-desc">No carregamento inicial</span>
+        </div>
+        <div class="val val-before">443 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:1px"></div>
+        </div>
+        <div class="val val-after is-good">2,3 KiB</div>
+        <div class="chip">193&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">JS próprio</span>
+          <span class="m-desc">Transferido por artigo</span>
+        </div>
+        <div class="val val-before">86 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:16.5%"></div>
+        </div>
+        <div class="val val-after">14 KiB</div>
+        <div class="chip">6,0&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Requisições</span>
+          <span class="m-desc">Arquivos baixados</span>
+        </div>
+        <div class="val val-before">211</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:82.5%"></div>
+        </div>
+        <div class="val val-after">174</div>
+        <div class="chip">&minus;18%</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">CSS bloqueante</span>
+          <span class="m-desc">Folhas que travam a exibição</span>
+        </div>
+        <div class="val val-before">4</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:50%"></div>
+        </div>
+        <div class="val val-after">2</div>
+        <div class="chip">2,0&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">SEO</span>
+          <span class="m-desc">Pontuação</span>
+        </div>
+        <div class="val val-before">85/100</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:85%"></div>
+          <div class="bar bar-after" style="width:92%"></div>
+        </div>
+        <div class="val val-after is-good">92/100</div>
+        <div class="chip">+8%</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════ CLS COMPARADO ══════════ -->
+
+  <div class="band anim" style="animation-delay:.3s">
+    <h2>CLS nos dois sites</h2>
+    <div class="band-meta">
+      <span>mesma escala</span>
+      <span>limites oficiais do Google</span>
+    </div>
+  </div>
+
+  <section class="panel anim" style="animation-delay:.32s">
+    <div class="cls">
+      <div class="eyebrow">A mesma causa nos dois sites, o mesmo resultado</div>
+
+      <div class="cls-big">
+        <span class="is-bad">0,709</span>
+        <span class="cls-arrow">&rarr;</span>
+        <span class="is-good">0,001</span>
+        <span class="cls-arrow" style="font-size:.34em">gohotsite</span>
+      </div>
+
+      <div class="scale-row">
+        <div class="scale-lab">Antes</div>
+        <div class="scale-bar">
+          <div class="scale-fill" style="width:100%;background:var(--bad)"></div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-lab">Depois</div>
+        <div class="scale-bar">
+          <div class="scale-fill" style="width:0.14%;min-width:3px;background:var(--good)"></div>
+        </div>
+      </div>
+
+      <div class="cls-big" style="margin-top:10px">
+        <span class="is-bad">0,303</span>
+        <span class="cls-arrow">&rarr;</span>
+        <span class="is-good">0,000</span>
+        <span class="cls-arrow" style="font-size:.34em">zattasports</span>
+      </div>
+
+      <div class="scale-row">
+        <div class="scale-lab">Antes</div>
+        <div class="scale-bar">
+          <div class="scale-fill" style="width:42.7%;background:var(--bad)"></div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-lab">Depois</div>
+        <div class="scale-bar">
+          <div class="scale-fill" style="width:0;background:var(--good)"></div>
+        </div>
+      </div>
+
+      <div class="scale-row">
+        <div class="scale-lab"></div>
+        <div class="scale-marks">
+          <span class="mark left-edge" style="left:0">0 &middot; zerado</span>
+          <span class="mark" style="left:14.1%">0,10 bom</span>
+          <span class="mark" style="left:35.3%">0,25 ruim</span>
+          <span class="mark" style="left:100%;transform:translateX(-100%)">0,709</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats anim" style="animation-delay:.34s">
+    <div class="stat">
+      <span class="stat-n is-good">0,000</span>
+      <span class="stat-l">CLS em 11 de 11 rodadas</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">5,2&times;</span>
+      <span class="stat-l">LCP zattasports</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">441 KiB</span>
+      <span class="stat-l">imagens a menos</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">73,6 KiB</span>
+      <span class="stat-l">código minificado</span>
+    </div>
+  </section>
+
+  <section class="note anim" style="animation-delay:.36s">
+    <div class="note-t">O que não melhorou, e por quê</div>
+    <p>
+      O <strong>TBT do zattasports subiu 8%</strong>. Não é trabalho novo: o tempo total
+      de execução de JavaScript ficou idêntico entre as duas medições. Ao liberar 441 KiB
+      de banda, os scripts de anúncio passaram a executar mais cedo, então mais da
+      execução deles cai dentro da janela que a métrica mede. O saldo é positivo — o LCP
+      caiu 9,5 s e a nota subiu 45 pontos, já com o TBT pesando 30% dela.
+    </p>
+    <p>
+      O que ainda trava os dois sites é <strong>JavaScript de terceiros</strong>: o Google
+      Publisher Tag carrega todos os espaços de anúncio de uma vez. A correção existe,
+      depende do parceiro de monetização, e é o único item de performance aberto nos dois
+      sites.
+    </p>
+  </section>
+
   <footer>
-    <span>Lighthouse 13.4.1 · CLI local · mobile, viewport 412&times;823, CPU 4&times;, rede móvel simulada.</span>
-    <span>Depois = mediana de 12 auditorias com o HTML servido pelo cache de borda (cf-cache-status: HIT).</span>
-    <span>URL medida: /en/how-to-choose-the-best-shein-summer-clothes-every-time/</span>
+    <span>Lighthouse 13.4.1 &middot; CLI local &middot; mobile, viewport 412&times;823, CPU 4&times;, rede móvel simulada.</span>
+    <span>Depois = mediana de 11 a 12 auditorias com o HTML servido pelo cache de borda (cf-cache-status: HIT), aquecido antes de medir.</span>
+    <span>URLs medidas: /en/how-to-choose-the-best-shein-summer-clothes-every-time/ &middot; /pt/shein-frenchy-trial-review-estilo-chic/</span>
+    <span>Nota: a auditoria varia com o estado do cache de borda &mdash; uma medição feita logo após um purge perde cerca de 18 pontos sem relação com o site. Por isso mediana, nunca rodada isolada.</span>
   </footer>
 
 </div>
