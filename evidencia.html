@@ -493,25 +493,25 @@
     <div class="eyebrow">Auditoria Lighthouse · antes e depois</div>
     <h1>Evidência da Carteira</h1>
     <p class="lede">
-      Dez sites WordPress monetizados com a mesma stack de anúncios. Cada correção
-      abaixo foi aplicada em produção e <strong>medida</strong> — mediana de 11 a 12
+      Onze sites WordPress monetizados com a mesma stack de anúncios. Cada correção
+      abaixo foi aplicada em produção e <strong>medida</strong> — mediana de 10 a 12
       auditorias com cache de borda quente, nunca uma rodada isolada. Nenhum anúncio
       saiu do ar, nenhum inventário foi reduzido.
     </p>
     <div class="meta">
       <span><b>Lighthouse</b> 13.4.1 · mobile</span>
-      <span><b>Período</b> 11/08 → 27/08/2026</span>
-      <span><b>Sites encerrados</b> 2 de 10</span>
+      <span><b>Período</b> 11/08 → 28/08/2026</span>
+      <span><b>Sites encerrados</b> 3 de 11</span>
     </div>
   </header>
 
   <section class="stats anim" style="animation-delay:.06s">
     <div class="stat">
-      <span class="stat-n is-good">2 / 10</span>
+      <span class="stat-n is-good">3 / 11</span>
       <span class="stat-l">sites encerrados</span>
     </div>
     <div class="stat">
-      <span class="stat-n">+46</span>
+      <span class="stat-n">+34</span>
       <span class="stat-l">pontos em média</span>
     </div>
     <div class="stat">
@@ -519,7 +519,7 @@
       <span class="stat-l">CLS eliminado</span>
     </div>
     <div class="stat">
-      <span class="stat-n">13 / 19</span>
+      <span class="stat-n">17 / 28</span>
       <span class="stat-l">itens encerrados</span>
     </div>
   </section>
@@ -538,6 +538,11 @@
       <div class="roster-row">
         <span class="r-site">zattasports.com</span>
         <span class="r-score"><span class="from">28</span> &rarr; <span class="to">73</span></span>
+        <span class="r-state st-done">encerrado</span>
+      </div>
+      <div class="roster-row">
+        <span class="r-site">pfvnbug.matterads.com</span>
+        <span class="r-score"><span class="from">83</span> &rarr; <span class="to">94</span></span>
         <span class="r-state st-done">encerrado</span>
       </div>
       <div class="roster-row pending">
@@ -915,10 +920,164 @@
     </div>
   </section>
 
+  <!-- ══════════ SITE 3 ══════════ -->
+
+  <div class="band anim" style="animation-delay:.29s">
+    <h2>pfvnbug.matterads.com</h2>
+    <div class="band-meta">
+      <span>28/08/2026</span>
+      <span>mediana de 10 a 12 auditorias por etapa</span>
+      <span>página de listagem</span>
+    </div>
+  </div>
+
+  <section class="hero anim" style="animation-delay:.30s">
+    <div class="gauge">
+      <svg viewBox="0 0 140 140" role="img" aria-label="Performance antes: 83 de 100">
+        <circle class="gauge-track" cx="70" cy="70" r="58" fill="none" stroke-width="10"></circle>
+        <circle class="gauge-arc" cx="70" cy="70" r="58" fill="none" stroke-width="10"
+                stroke="currentColor" stroke-dasharray="302.5 364.4" style="color:var(--mid)"></circle>
+        <text x="70" y="70" text-anchor="middle" dominant-baseline="central"
+              class="gauge-num is-mid" fill="currentColor">83</text>
+      </svg>
+      <div class="gauge-cap">Performance · antes</div>
+    </div>
+
+    <div class="delta">
+      <div class="delta-x">+11</div>
+      <div class="delta-lab">pontos</div>
+    </div>
+
+    <div class="gauge">
+      <svg viewBox="0 0 140 140" role="img" aria-label="Performance depois: 94 de 100">
+        <circle class="gauge-track" cx="70" cy="70" r="58" fill="none" stroke-width="10"></circle>
+        <circle class="gauge-arc" cx="70" cy="70" r="58" fill="none" stroke-width="10"
+                stroke="currentColor" stroke-dasharray="342.6 364.4" style="color:var(--good)"></circle>
+        <text x="70" y="70" text-anchor="middle" dominant-baseline="central"
+              class="gauge-num is-good" fill="currentColor">94</text>
+      </svg>
+      <div class="gauge-cap">Performance · depois</div>
+    </div>
+  </section>
+
+  <section class="panel anim" style="animation-delay:.31s">
+    <div class="panel-head">
+      <h3>Velocidade e peso</h3>
+      <span>menor é melhor</span>
+    </div>
+    <div class="rows">
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">TTFB</span>
+          <span class="m-desc">Resposta do servidor</span>
+        </div>
+        <div class="val val-before">568 ms</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:4.6%"></div>
+        </div>
+        <div class="val val-after is-good">26 ms</div>
+        <div class="chip">21,8&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">LCP</span>
+          <span class="m-desc">Carregamento</span>
+        </div>
+        <div class="val val-before">4,07 s</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:67.3%"></div>
+        </div>
+        <div class="val val-after">2,74 s</div>
+        <div class="chip">1,5&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">FCP</span>
+          <span class="m-desc">Primeiro conteúdo</span>
+        </div>
+        <div class="val val-before">2,72 s</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:73.5%"></div>
+        </div>
+        <div class="val val-after">2,00 s</div>
+        <div class="chip">1,4&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Fontes</span>
+          <span class="m-desc">Webfonts baixados</span>
+        </div>
+        <div class="val val-before">222 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:16.8%"></div>
+        </div>
+        <div class="val val-after is-good">37 KiB</div>
+        <div class="chip">6,0&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Peso total</span>
+          <span class="m-desc">Da página</span>
+        </div>
+        <div class="val val-before">958 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:80.5%"></div>
+        </div>
+        <div class="val val-after">771 KiB</div>
+        <div class="chip">&minus;187</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="stats anim" style="animation-delay:.32s">
+    <div class="stat">
+      <span class="stat-n is-good">21,8&times;</span>
+      <span class="stat-l">TTFB</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">2,4&times;</span>
+      <span class="stat-l">pintura real</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">6,0&times;</span>
+      <span class="stat-l">peso de fontes</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n is-good">100</span>
+      <span class="stat-l">SEO mantido</span>
+    </div>
+  </section>
+
+  <section class="note anim" style="animation-delay:.33s">
+    <div class="note-t">O achado mais barato da carteira</div>
+    <p>
+      O tema pré-carregava a fonte <strong>Montserrat itálica</strong> — que nenhum
+      elemento da página usa — enquanto a versão normal, a que aparece em todo o texto,
+      ficava sem pré-carregamento. Eram 40 KiB baixados e descartados a cada visita.
+      Trocar o endereço de um arquivo resolveu, e sozinho valeu <strong>6 pontos</strong>.
+    </p>
+    <p>
+      Na mesma página, a maior requisição de todas — 123 KiB de fonte de ícones — existia
+      para desenhar <strong>dois ícones</strong>. Os três ícones do site inteiro viraram
+      desenhos embutidos no HTML, e a fonte de ícones saiu por completo.
+    </p>
+  </section>
+
   <!-- ══════════ CLS COMPARADO ══════════ -->
 
   <div class="band anim" style="animation-delay:.3s">
-    <h2>CLS nos dois sites</h2>
+    <h2>CLS nos sites que tinham o problema</h2>
     <div class="band-meta">
       <span>mesma escala</span>
       <span>limites oficiais do Google</span>
@@ -1020,7 +1179,7 @@
   <footer>
     <span>Lighthouse 13.4.1 &middot; CLI local &middot; mobile, viewport 412&times;823, CPU 4&times;, rede móvel simulada.</span>
     <span>Depois = mediana de 11 a 12 auditorias com o HTML servido pelo cache de borda (cf-cache-status: HIT), aquecido antes de medir.</span>
-    <span>URLs medidas: /en/how-to-choose-the-best-shein-summer-clothes-every-time/ &middot; /pt/shein-frenchy-trial-review-estilo-chic/</span>
+    <span>URLs medidas: /en/how-to-choose-the-best-shein-summer-clothes-every-time/ &middot; /pt/shein-frenchy-trial-review-estilo-chic/ &middot; pfvnbug.matterads.com/pt/</span>
     <span>Nota: a auditoria varia com o estado do cache de borda &mdash; uma medição feita logo após um purge perde cerca de 18 pontos sem relação com o site. Por isso mediana, nunca rodada isolada.</span>
   </footer>
 
