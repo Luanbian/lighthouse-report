@@ -500,26 +500,26 @@
     </p>
     <div class="meta">
       <span><b>Lighthouse</b> 13.4.1 · mobile</span>
-      <span><b>Período</b> 11/08 → 01/09/2026</span>
-      <span><b>Sites encerrados</b> 8 de 11</span>
+      <span><b>Período</b> 11/08 → 02/09/2026</span>
+      <span><b>Sites encerrados</b> 9 de 11</span>
     </div>
   </header>
 
   <section class="stats anim" style="animation-delay:.06s">
     <div class="stat">
-      <span class="stat-n is-good">8 / 11</span>
+      <span class="stat-n is-good">9 / 11</span>
       <span class="stat-l">sites encerrados</span>
     </div>
     <div class="stat">
-      <span class="stat-n">+204</span>
+      <span class="stat-n">+218</span>
       <span class="stat-l">pontos somados</span>
     </div>
     <div class="stat">
-      <span class="stat-n is-good">7 / 7</span>
+      <span class="stat-n is-good">8 / 8</span>
       <span class="stat-l">CLS corrigido</span>
     </div>
     <div class="stat">
-      <span class="stat-n">40 / 72</span>
+      <span class="stat-n">48 / 82</span>
       <span class="stat-l">itens encerrados</span>
     </div>
   </section>
@@ -570,8 +570,13 @@
         <span class="r-score"><span class="from">16</span> &rarr; <span class="to">42</span></span>
         <span class="r-state st-done">encerrado</span>
       </div>
+      <div class="roster-row">
+        <span class="r-site">judgeapps.com</span>
+        <span class="r-score"><span class="from">28</span> &rarr; <span class="to">42</span></span>
+        <span class="r-state st-done">encerrado</span>
+      </div>
       <div class="roster-row pending">
-        <span class="r-site">apps.meucreditodigital.com · judgeapps.com · news.judgeapps.com</span>
+        <span class="r-site">apps.meucreditodigital.com · news.judgeapps.com</span>
         <span class="r-score">&mdash;</span>
         <span class="r-state st-wait">na fila</span>
       </div>
@@ -2431,6 +2436,324 @@
     </p>
   </section>
 
+  <!-- ══════════ SITE 9 ══════════ -->
+
+  <div class="band anim" style="animation-delay:.64s">
+    <h2>judgeapps.com</h2>
+    <div class="band-meta">
+      <span>11/08 &rarr; 02/09/2026</span>
+      <span>7 lotes &middot; 102 auditorias</span>
+      <span>8 de 10 itens encerrados</span>
+    </div>
+  </div>
+
+  <section class="hero anim" style="animation-delay:.65s">
+    <div class="gauge">
+      <svg viewBox="0 0 140 140" role="img" aria-label="Performance antes: 28 de 100">
+        <circle class="gauge-track" cx="70" cy="70" r="58" fill="none" stroke-width="10"></circle>
+        <circle class="gauge-arc" cx="70" cy="70" r="58" fill="none" stroke-width="10"
+                stroke="currentColor" stroke-dasharray="102.0 364.4" style="color:var(--bad)"></circle>
+        <text x="70" y="70" text-anchor="middle" dominant-baseline="central"
+              class="gauge-num is-bad" fill="currentColor">28</text>
+      </svg>
+      <div class="gauge-cap">Performance &middot; antes</div>
+    </div>
+
+    <div class="delta">
+      <div class="delta-x">+14</div>
+      <div class="delta-lab">pontos &middot; pior carga 9 &rarr; 37</div>
+    </div>
+
+    <div class="gauge">
+      <svg viewBox="0 0 140 140" role="img" aria-label="Performance depois: 42 de 100">
+        <circle class="gauge-track" cx="70" cy="70" r="58" fill="none" stroke-width="10"></circle>
+        <circle class="gauge-arc" cx="70" cy="70" r="58" fill="none" stroke-width="10"
+                stroke="currentColor" stroke-dasharray="153.1 364.4" style="color:var(--bad)"></circle>
+        <text x="70" y="70" text-anchor="middle" dominant-baseline="central"
+              class="gauge-num is-bad" fill="currentColor">42</text>
+      </svg>
+      <div class="gauge-cap">Performance &middot; depois</div>
+    </div>
+  </section>
+
+  <p class="lede" style="max-width:74ch;font-size:13.5px;margin:-14px 0 0">
+    O site com a nota mais instável da carteira: a mesma página marcava de
+    <strong>9 a 53</strong> em doze medições seguidas, porque a instabilidade visual só
+    aparecia nos carregamentos que recebiam carga extra de anúncio. Corrigir a altura
+    reservada dos espaços levou a pior carga de <strong>9 para 37</strong> e a faixa inteira
+    de 44 pontos de amplitude para 31. Foi o primeiro site da carteira em que a auditoria
+    apontava o <strong>servidor</strong> como problema crítico e a remedição mostrou que ele
+    respondia em 182 ms &mdash; e que consertá-lo <em>baixaria</em> a nota.
+  </p>
+
+  <section class="panel anim" style="animation-delay:.66s">
+    <div class="panel-head">
+      <h3>Core Web Vitals</h3>
+      <span>menor é melhor</span>
+    </div>
+    <div class="rows">
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">CLS</span>
+          <span class="m-desc">Instabilidade visual · pior de 12 cargas</span>
+        </div>
+        <div class="val val-before">0,767</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:0.17%;min-width:3px"></div>
+        </div>
+        <div class="val val-after is-good">0,001</div>
+        <div class="chip">590&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Speed Index</span>
+          <span class="m-desc">Velocidade de preenchimento da tela</span>
+        </div>
+        <div class="val val-before">7,22 s</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:82.3%"></div>
+        </div>
+        <div class="val val-after is-good">5,94 s</div>
+        <div class="chip">1,2&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">LCP</span>
+          <span class="m-desc">Carregamento · simulado pelo Lighthouse</span>
+        </div>
+        <div class="val val-before">15,85 s</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:66.2%"></div>
+        </div>
+        <div class="val val-after">10,50 s</div>
+        <div class="chip">1,5&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">FCP</span>
+          <span class="m-desc">Primeiro conteúdo · travado pelo overlay</span>
+        </div>
+        <div class="val val-before">5,07 s</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-flat" style="width:97.2%"></div>
+        </div>
+        <div class="val val-after">4,93 s</div>
+        <div class="chip chip-flat">estável</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">TBT</span>
+          <span class="m-desc">Travado ao toque · varia 742-1.030 ms entre lotes</span>
+        </div>
+        <div class="val val-before">742 ms</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:91.3%"></div>
+          <div class="bar bar-flat" style="width:100%"></div>
+        </div>
+        <div class="val val-after">813 ms</div>
+        <div class="chip chip-flat">+71 ms</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="panel anim" style="animation-delay:.67s">
+    <div class="panel-head">
+      <h3>Peso, boas práticas e busca</h3>
+      <span>antes &rarr; depois</span>
+    </div>
+    <div class="rows">
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Imagens próprias</span>
+          <span class="m-desc">Baixadas nos primeiros 390 ms, sem serem o conteúdo principal</span>
+        </div>
+        <div class="val val-before">939,4 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:1%;min-width:3px"></div>
+        </div>
+        <div class="val val-after is-good">9,0 KiB</div>
+        <div class="chip">104&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Peso da página</span>
+          <span class="m-desc">Total transferido por leitor</span>
+        </div>
+        <div class="val val-before">2.382 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:60.4%"></div>
+        </div>
+        <div class="val val-after is-good">1.438 KiB</div>
+        <div class="chip">&minus;944 KiB</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">JavaScript inline</span>
+          <span class="m-desc">Embutido no HTML, sem cache</span>
+        </div>
+        <div class="val val-before">113,0 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:28.3%"></div>
+        </div>
+        <div class="val val-after is-good">32,0 KiB</div>
+        <div class="chip">3,5&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Documento HTML</span>
+          <span class="m-desc">A primeira requisição, que represa todas</span>
+        </div>
+        <div class="val val-before">60,7 KiB</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:51.1%"></div>
+        </div>
+        <div class="val val-after is-good">31,0 KiB</div>
+        <div class="chip">2,0&times;</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Requisições próprias</span>
+          <span class="m-desc">Arquivos servidos pelo próprio site</span>
+        </div>
+        <div class="val val-before">38</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:89.5%"></div>
+        </div>
+        <div class="val val-after">34</div>
+        <div class="chip">&minus;4</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Imagens sem dimensão</span>
+          <span class="m-desc">Auditoria do Lighthouse</span>
+        </div>
+        <div class="val val-before">reprova</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:50%"></div>
+          <div class="bar bar-after" style="width:100%"></div>
+        </div>
+        <div class="val val-after is-good">aprova</div>
+        <div class="chip">corrigido</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">Erros no console</span>
+          <span class="m-desc">Traduções deixavam de se registrar em produção</span>
+        </div>
+        <div class="val val-before">1</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:100%"></div>
+          <div class="bar bar-after" style="width:0"></div>
+        </div>
+        <div class="val val-after is-good">0</div>
+        <div class="chip">corrigido</div>
+      </div>
+
+      <div class="row">
+        <div class="m-name">
+          <span class="m-code">SEO</span>
+          <span class="m-desc">Zero auditorias reprovadas</span>
+        </div>
+        <div class="val val-before">92</div>
+        <div class="track">
+          <div class="bar bar-before" style="width:92%"></div>
+          <div class="bar bar-after" style="width:100%"></div>
+        </div>
+        <div class="val val-after is-good">100</div>
+        <div class="chip">+8</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="stats anim" style="animation-delay:.68s">
+    <div class="stat">
+      <span class="stat-n is-good">104&times;</span>
+      <span class="stat-l">imagens próprias</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n is-good">4,1&times;</span>
+      <span class="stat-l">pior carga · 9 &rarr; 37</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n is-good">55 / 59</span>
+      <span class="stat-l">cargas com CLS zero</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">944 KiB</span>
+      <span class="stat-l">a menos por leitor</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n is-good">100</span>
+      <span class="stat-l">SEO</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">8 / 10</span>
+      <span class="stat-l">itens encerrados</span>
+    </div>
+  </section>
+
+  <section class="note anim" style="animation-delay:.69s">
+    <div class="note-t">O item crítico do relatório era para não fazer</div>
+    <p>
+      A auditoria abria com o <strong>servidor</strong>: 603 ms para responder, cache de HTML
+      desativado, &ldquo;cada visita renderiza o site do zero&rdquo;. A remedição com 12
+      medições deu <strong>182 ms</strong> e a auditoria de servidor <strong>passa</strong>.
+      A causa também estava errada &mdash; o servidor de origem <em>já</em> serve de cache.
+    </p>
+    <p>
+      E há uma inversão que só aparece medindo: as duas medições com o servidor
+      <strong>mais lento</strong> foram as de <strong>nota mais alta</strong> de todo o
+      conjunto (53 e 51, contra 35-46 nas demais). O overlay de espera do anúncio corre
+      contra a pintura da tela; quando o servidor demora, o overlay perde a corrida e a
+      nota sobe. <strong>Ligar o cache de borda provavelmente derrubaria a nota</strong> —
+      então o item foi deixado de fora de propósito, com o número na mão.
+    </p>
+    <p>
+      Outras <strong>cinco recomendações não tinham o que corrigir</strong>: o arquivo do
+      plugin próprio já estava minificado, a fonte já carregava de forma otimizada, o pacote
+      hospedado na nuvem e as bibliotecas de rastreamento <strong>não são servidos por este
+      site</strong> (vêm do gerenciador de tags), e remover <em>todo</em> o CSS que bloqueia
+      a renderização valeria 150 ms. Nenhum tempo foi gasto nelas.
+    </p>
+    <p>
+      O tempo de resposta ao toque (<strong>TBT</strong>) não melhorou, e a página é honesta
+      sobre isso: ele oscilou entre <strong>742 e 1.030 ms</strong> ao longo de sete lotes de
+      doze medições, <em>sem relação com nenhuma mudança</em> &mdash; o equivalente a 4 pontos
+      de nota de puro ruído. O que não é ruído é a velocidade de preenchimento da tela, que
+      ficou entre 5,3 e 5,9 s em seis lotes seguidos contra 7,2 s no início, e a pior carga,
+      que saiu de 9 para 37.
+    </p>
+    <p>
+      Um item ficou <strong>aberto de propósito</strong>: o logo em alta resolução. Só existe
+      o arquivo no tamanho exato de exibição, e ampliá-lo faria a auditoria passar
+      <em>sem deixar o logo mais nítido</em>. Vale 3,8 pontos de boas práticas e depende de
+      reexportar a arte original.
+    </p>
+  </section>
+
   <!-- ══════════ CLS COMPARADO ══════════ -->
 
   <div class="band anim" style="animation-delay:.3s">
@@ -2443,7 +2766,7 @@
 
   <section class="panel anim" style="animation-delay:.32s">
     <div class="cls">
-      <div class="eyebrow">A mesma causa nos sete sites, o mesmo resultado</div>
+      <div class="eyebrow">A mesma causa nos oito sites, o mesmo resultado</div>
 
       <div class="cls-big">
         <span class="is-bad">0,709</span>
@@ -2585,6 +2908,26 @@
         </div>
       </div>
 
+      <div class="cls-big" style="margin-top:10px">
+        <span class="is-bad">0,767</span>
+        <span class="cls-arrow">&rarr;</span>
+        <span class="is-good">0,001</span>
+        <span class="cls-arrow" style="font-size:.34em">judgeapps</span>
+      </div>
+
+      <div class="scale-row">
+        <div class="scale-lab">Antes</div>
+        <div class="scale-bar">
+          <div class="scale-fill" style="width:86.5%;background:var(--bad)"></div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-lab">Depois</div>
+        <div class="scale-bar">
+          <div class="scale-fill" style="width:0.15%;min-width:3px;background:var(--good)"></div>
+        </div>
+      </div>
+
       <div class="scale-row">
         <div class="scale-lab"></div>
         <div class="scale-marks">
@@ -2599,7 +2942,7 @@
 
   <section class="stats anim" style="animation-delay:.34s">
     <div class="stat">
-      <span class="stat-n is-good">7 / 7</span>
+      <span class="stat-n is-good">8 / 8</span>
       <span class="stat-l">sites com CLS corrigido</span>
     </div>
     <div class="stat">
@@ -2607,7 +2950,7 @@
       <span class="stat-l">LCP zattasports</span>
     </div>
     <div class="stat">
-      <span class="stat-n">1.398 KiB</span>
+      <span class="stat-n">2.328 KiB</span>
       <span class="stat-l">imagens a menos</span>
     </div>
     <div class="stat">
@@ -2635,12 +2978,14 @@
 
   <footer>
     <span>Lighthouse 13.4.1 &middot; CLI local &middot; mobile, viewport 412&times;823, CPU 4&times;, rede móvel simulada.</span>
-    <span>Depois = mediana de 11 a 12 auditorias com o HTML servido pelo cache de borda (cf-cache-status: HIT), aquecido antes de medir. Exceção: suabencao.com serve o HTML com cf-cache-status: BYPASS por configuração do Cloudflare — lá as 12 rodadas foram medidas na origem, sem cache de borda.</span>
-    <span>URLs medidas: /en/how-to-choose-the-best-shein-summer-clothes-every-time/ &middot; /pt/shein-frenchy-trial-review-estilo-chic/ &middot; pfvnbug.matterads.com/pt/ &middot; /pt/guia-completo-do-cartao-bank-of-america-customized-cash/ &middot; /nl/hoe-je-vertrouwen-herstelt-en-je-band-versterkt/ &middot; /en/how-to-use-discount-coupons-in-your-online-fashion-store/ &middot; /pt/como-escolher-o-melhor-assunto-para-primeiro-encontro/ &middot; /en/why-people-ghost-and-how-to-handle-it/</span>
+    <span>Depois = mediana de 11 a 12 auditorias com o HTML servido pelo cache de borda (cf-cache-status: HIT), aquecido antes de medir. Exceções: suabencao.com e judgeapps.com servem o HTML com cf-cache-status: BYPASS por configuração do Cloudflare. No suabencao isso significava origem lenta (TTFB de 874 ms); no judgeapps não — o servidor de origem responde de cache próprio (x-fastcgi-cache: HIT) com TTFB de 182 ms.</span>
+    <span>URLs medidas: /en/how-to-choose-the-best-shein-summer-clothes-every-time/ &middot; /pt/shein-frenchy-trial-review-estilo-chic/ &middot; pfvnbug.matterads.com/pt/ &middot; /pt/guia-completo-do-cartao-bank-of-america-customized-cash/ &middot; /nl/hoe-je-vertrouwen-herstelt-en-je-band-versterkt/ &middot; /en/how-to-use-discount-coupons-in-your-online-fashion-store/ &middot; /pt/como-escolher-o-melhor-assunto-para-primeiro-encontro/ &middot; /en/why-people-ghost-and-how-to-handle-it/ &middot; /en/creative-questions-for-better-online-dating-conversations/</span>
     <span>suabencao.com: os dois medidores da seção são medidas distintas e rotuladas — <b>20 = pior das 12 auditorias antes</b>; <b>49 = média das 12 depois</b> — mesmo par usado na tabela do topo. Comparando a mesma medida dos dois lados: pior carga 20 → 40, média 44 → 49, mediana 42 → 43, melhor carga 64 → 76. Todas medidas em 31/08, não a rodada única do relatório de 11/08.</span>
     <span>shop.gohotsite.com: <b>19 = a nota da auditoria original de 11/08</b>, que foi também a pior das 12 medições do baseline remedido; <b>44 = mediana das 12 medições de 01/09</b>. Comparando a mesma medida dos dois lados: mediana 39 → 44, pior carga 19 → 34, melhor carga 48 → 69. Parte do avanço da mediana vem do sorteio do overlay de espera, que caiu em 5 das 12 medições finais e em nenhuma do baseline — o ganho que não depende de sorteio é a pior carga e o CLS.</span>
     <span>gohotsite.com: <b>28 = a nota da auditoria original de 11/08</b>, confirmada pela remedição de 12 rodadas (mediana 29,5) — o único site da carteira em que o relatório acertou; <b>37 = mediana das 12 medições de 01/09</b>. Os +8 pontos do painel são a comparação restrita ao mesmo modo de pintura e à mesma faixa de requisições (29 → 37), que isola o efeito das mudanças da variação da carga de anúncio. O CLS depois é o pior valor de 12 cargas; a mediana é 0,000.</span>
     <span>apps.bencaodiaria.club: <b>16 = a nota da auditoria original de 11/08</b>; <b>42 = mediana das 12 medições de 01/09</b> (41,5, arredondada). A remedição do estado inicial com 12 auditorias deu mediana 39 &mdash; a medição de 11/08 caiu numa das piores cargas. Comparando a mesma medida dos dois lados, com o modo de pintura e a carga de anúncio controlados: mediana 39 &rarr; 41,5, pior carga 28 &rarr; 40. O ganho que não depende de sorteio é a pior carga, o CLS zerado em 12 de 12, e os 841 KiB a menos por leitor. O CLS antes é o pior valor de 12 cargas; a mediana já era 0,040.</span>
+    <span>judgeapps.com: <b>28 = a nota da auditoria original de 11/08</b>; <b>42 = mediana das 12 medições de 02/09</b> (41,5, arredondada). A remedição do estado inicial com 12 auditorias deu mediana 40 &mdash; a medição de 11/08 caiu numa das melhores cargas, não numa das piores, e ainda assim registrou 28. Comparando a mesma medida dos dois lados, com o modo de pintura e a carga de anúncio controlados: mediana 40,5 &rarr; 41,5, pior carga 9 &rarr; 37, faixa 9-53 &rarr; 37-68. O ganho que não depende de sorteio é a pior carga, o CLS (zero em 55 de 59 cargas medidas depois da correção, 0,001 nas outras quatro, incluindo uma com 156 requisições e 12 criativos), os 944 KiB a menos por leitor e o SEO em 100. O CLS antes é o pior valor de 12 cargas; a mediana já era 0,000. O TBT não melhorou e está na página como medido: ele oscilou entre 742 e 1.030 ms ao longo de sete lotes sem relação com as mudanças.</span>
+    <span>judgeapps.com: dois dos dez itens do relatório ficaram abertos de propósito. O cache de HTML na borda <b>não foi ligado</b> porque as duas medições de servidor mais lento foram as de nota mais alta do conjunto (53 e 51) — ligá-lo provavelmente derrubaria a nota, e o número está registrado. O logo em alta resolução <b>depende de reexportar a arte</b>: só existe o arquivo no tamanho exato de exibição, e ampliá-lo faria a auditoria passar sem deixar o logo mais nítido.</span>
     <span>Nota: a auditoria varia com o estado do cache de borda &mdash; uma medição feita logo após um purge perde cerca de 18 pontos sem relação com o site. Por isso mediana, nunca rodada isolada.</span>
   </footer>
 
