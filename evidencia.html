@@ -3,849 +3,283 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Performance dos sites headless</title>
+<title>Velocidade appszetta.com</title>
 <style>
+/* Layout: relatório de auditoria em coluna única, resumo primeiro, depois diagnóstico por área e plano de ação */
 :root {
-  color-scheme: light;
-  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --grid: #e1e0d9; --border: rgba(11, 11, 11, .10);
-  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --rest: #c3c2b7;
-  --good: #0ca30c; --warn: #fab219; --bad: #d03b3b;
-  --good-bg: rgba(12, 163, 12, .11); --ni-bg: rgba(250, 178, 25, .18); --poor-bg: rgba(208, 59, 59, .11);
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #16202b;
+  --muted: #5b6876;
+  --line: #dde2e8;
+  --accent: #1f5fbf;
+  --good: #0a8a4a;
+  --good-bg: #e2f5ea;
+  --avg: #b25e00;
+  --avg-bg: #fdf0dc;
+  --poor: #c62828;
+  --poor-bg: #fde6e6;
+  --track: #e7ebf0;
+  --seg1: #1f5fbf;
+  --seg2: #7a9fd6;
+  --seg3: #2f9e8f;
+  --seg4: #c98a2b;
+  --f-display: "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Segoe UI", system-ui, sans-serif;
+  --f-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --border: rgba(255, 255, 255, .10);
-    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --rest: #52514e;
-    --good-bg: rgba(12, 163, 12, .20); --ni-bg: rgba(250, 178, 25, .18); --poor-bg: rgba(208, 59, 59, .22);
+    --bg: #0f151c; --surface: #16202a; --fg: #e4e9ef; --muted: #93a1b0; --line: #2a3644; --accent: #7fb0ff;
+    --good: #4fd18b; --good-bg: #123526; --avg: #f2b155; --avg-bg: #3a2a12; --poor: #ff7b7b; --poor-bg: #3d1a1c;
+    --track: #24303d; --seg1: #6fa4ff; --seg2: #3e5f8f; --seg3: #4cc2b1; --seg4: #e0a64c; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  color-scheme: dark;
-  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --border: rgba(255, 255, 255, .10);
-  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --rest: #52514e;
-  --good-bg: rgba(12, 163, 12, .20); --ni-bg: rgba(250, 178, 25, .18); --poor-bg: rgba(208, 59, 59, .22);
+  --bg: #0f151c; --surface: #16202a; --fg: #e4e9ef; --muted: #93a1b0; --line: #2a3644; --accent: #7fb0ff;
+  --good: #4fd18b; --good-bg: #123526; --avg: #f2b155; --avg-bg: #3a2a12; --poor: #ff7b7b; --poor-bg: #3d1a1c;
+  --track: #24303d; --seg1: #6fa4ff; --seg2: #3e5f8f; --seg3: #4cc2b1; --seg4: #e0a64c; color-scheme: dark;
 }
-* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
-.wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px; }
-header.cover { padding: 56px 0 40px; }
-.eyebrow { color: var(--ink2); font-size: .9rem; letter-spacing: .02em; margin: 0 0 8px; }
-h1 { font-size: clamp(2rem, 5vw, 2.9rem); line-height: 1.1; margin: 0 0 12px; letter-spacing: -.01em; }
-.cover .intro { font-size: 1.15rem; color: var(--ink2); max-width: 62ch; margin: 0 0 28px; }
-.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
-.meta div { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
-.meta dt { font-size: .8rem; color: var(--ink2); margin: 0 0 2px; }
-.meta dd { margin: 0; font-weight: 600; }
-.legend-status { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 20px; color: var(--ink2); font-size: .9rem; align-items: center; }
-section { padding: 44px 0; border-top: 1px solid var(--grid); }
-h2 { font-size: 1.6rem; margin: 0 0 6px; }
-h3 { font-size: 1.1rem; margin: 0 0 4px; }
-.lead { color: var(--ink2); max-width: 72ch; margin: 0 0 20px; }
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; break-inside: avoid; }
-.card .big { font-size: 2.6rem; font-weight: 650; line-height: 1.05; letter-spacing: -.01em; }
-.card .what { font-weight: 600; margin: 6px 0 8px; }
-.card .means { color: var(--ink2); margin: 0; font-size: .95rem; }
-.card .src { color: var(--ink2); font-size: .78rem; margin: 10px 0 0; }
-.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; margin-top: 16px; break-inside: avoid; }
-.panel .def { color: var(--ink2); margin: 0 0 14px; font-size: .95rem; }
-.panel .takeaway { margin: 14px 0 0; font-size: .95rem; }
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 16px; align-items: start; }
-.grid2 > .panel { margin-top: 0; }
-.stack { display: grid; gap: 16px; margin-top: 16px; }
-.note { border-left: 3px solid var(--s1); background: var(--surface); border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 16px 0 0; }
-.note.warn { border-left-color: var(--warn); }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .85rem; color: var(--ink2); margin: 0 0 6px; }
-.legend > span { display: inline-flex; align-items: center; gap: 6px; }
-.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; flex: none; }
-.sw.line { width: 2px; height: 14px; border-radius: 0; background: var(--ink2); }
-.grp { font-weight: 600; margin: 14px 0 2px; font-size: .95rem; }
-.grp small { font-weight: 400; color: var(--ink2); margin-left: 6px; }
-.row { display: grid; grid-template-columns: minmax(7.5rem, 11rem) 1fr; align-items: center; gap: 12px; min-height: 30px; padding: 2px 0; }
-.has-ref .val { background: var(--surface); padding: 0 4px; border-radius: 4px; z-index: 3; }
-.lab { font-size: .9rem; color: var(--ink2); line-height: 1.25; }
-.lab small { display: block; font-size: .78rem; }
-.track { position: relative; display: flex; align-items: center; min-height: 30px; min-width: 0; }
-.zones { position: absolute; inset: 2px 0; display: flex; border-radius: 4px; overflow: hidden; }
-.zones span { height: 100%; }
-.bar { display: flex; gap: 2px; height: 16px; position: relative; z-index: 1; flex: none; }
-.seg { height: 100%; min-width: 2px; outline: none; }
-.seg:last-child { border-radius: 0 4px 4px 0; }
-.seg:hover { filter: brightness(1.12); }
-.seg:focus-visible { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
-.val { margin-left: 8px; font-size: .88rem; white-space: nowrap; position: relative; z-index: 1; font-variant-numeric: tabular-nums; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.ref { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--ink2); z-index: 2; }
-.chip { display: inline-flex; align-items: center; gap: 5px; font-size: .76rem; color: var(--ink); padding: 1px 7px 1px 3px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); white-space: nowrap; }
-.chip i { font-style: normal; display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; color: #fff; font-size: .62rem; font-weight: 800; }
-.chip.good i { background: var(--good); } .chip.ni i { background: var(--warn); color: #0b0b0b; } .chip.poor i { background: var(--bad); }
-.chip.na { color: var(--ink2); padding-left: 7px; }
-details.tv summary { cursor: pointer; color: var(--ink2); font-size: .85rem; margin-top: 12px; }
-.tw { overflow-x: auto; margin-top: 8px; }
-table { border-collapse: collapse; width: 100%; font-size: .85rem; font-variant-numeric: tabular-nums; }
-th, td { padding: 6px 8px; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
-th { color: var(--ink2); font-weight: 600; }
-td.n, th.n { text-align: right; white-space: nowrap; }
-table.scores td { text-align: center; padding: 12px 8px; border-bottom: 2px solid var(--surface); }
-table.scores td.good { background: var(--good-bg); } table.scores td.ni { background: var(--ni-bg); } table.scores td.poor { background: var(--poor-bg); }
-table.scores th[scope="row"] { vertical-align: middle; text-align: left; color: var(--ink); white-space: nowrap; }
-table.scores th { text-align: center; }
-.score { display: block; font-size: 2rem; font-weight: 650; line-height: 1.1; margin-bottom: 4px; }
-.att { display: grid; gap: 14px; }
-.att article { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; break-inside: avoid; }
-.att .ic { grid-row: span 3; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; background: var(--bad); }
-.att .ic.ni { background: var(--warn); color: #0b0b0b; }
-.att .ic.info { background: var(--ink2); }
-.att h3 { margin: 2px 0 0; }
-.att p { margin: 0; color: var(--ink2); }
-.att p.do { color: var(--ink); }
-.att p.do b { font-weight: 650; }
-dl.gloss { display: grid; grid-template-columns: minmax(8rem, 14rem) 1fr; gap: 0; margin: 0; }
-dl.gloss dt, dl.gloss dd { padding: 9px 0; border-bottom: 1px solid var(--grid); margin: 0; }
-dl.gloss dt { font-weight: 600; padding-right: 16px; }
-dl.gloss dd { color: var(--ink2); }
-footer { border-top: 1px solid var(--grid); padding: 36px 0 56px; color: var(--ink2); font-size: .9rem; }
-footer h2 { color: var(--ink); font-size: 1.2rem; }
-footer ul { padding-left: 18px; margin: 8px 0 0; }
-footer li { margin-bottom: 6px; }
-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; background: var(--grid); padding: 1px 5px; border-radius: 4px; }
-#tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: var(--page); padding: 6px 10px; border-radius: 8px; font-size: .85rem; max-width: 280px; box-shadow: 0 4px 14px rgba(0, 0, 0, .18); }
-#tip strong { display: block; font-size: .95rem; }
-@media (max-width: 600px) {
-  .row { grid-template-columns: 1fr; gap: 0; margin-bottom: 6px; }
-  .val { white-space: normal; }
-  dl.gloss { grid-template-columns: 1fr; }
-  dl.gloss dt { border-bottom: 0; padding-bottom: 0; }
-  .card .big { font-size: 2.2rem; }
-}
-@media print {
-  :root, :root[data-theme] {
-    color-scheme: light;
-    --page: #fff; --surface: #fff; --ink: #0b0b0b; --ink2: #52514e; --grid: #e1e0d9; --border: rgba(11, 11, 11, .14);
-    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --rest: #c3c2b7;
-    --good-bg: rgba(12, 163, 12, .11); --ni-bg: rgba(250, 178, 25, .18); --poor-bg: rgba(208, 59, 59, .11);
-  }
-  body { font-size: 13px; }
-  header.cover { padding-top: 0; }
-  section { padding: 24px 0; }
-  details.tv, #tip { display: none !important; }
-  h2, h3 { break-after: avoid; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.6 var(--f-body); }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 48px; }
+h1, h2, h3, h4 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 24px; font-weight: 700; }
+h3 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+h4 { font-size: 16px; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+code { font-family: var(--f-mono); font-size: 12.5px; word-break: break-all; }
+.muted { color: var(--muted); font-weight: 400; }
+.eyebrow { font: 500 12px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+header { display: grid; gap: 14px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; color: var(--muted); }
+.meta b { color: var(--fg); font-weight: 500; }
+section { display: grid; gap: 18px; min-width: 0; }
+.sec-head { display: grid; gap: 6px; border-top: 2px solid var(--fg); padding-top: 14px; }
+.sec-head .eyebrow { color: var(--muted); }
+
+.scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.device { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 12px; }
+.gauges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.gauge { margin: 0; display: grid; justify-items: center; gap: 6px; text-align: center; }
+.gauge svg { width: 100%; max-width: 88px; }
+.gauge .track { fill: none; stroke: var(--track); stroke-width: 9; }
+.gauge .arc { fill: none; stroke-width: 9; stroke-linecap: round; }
+.gauge text { font: 700 28px var(--f-display); fill: var(--fg); }
+.gauge figcaption { font-size: 12px; color: var(--muted); line-height: 1.3; }
+.gauge.good .arc { stroke: var(--good); } .gauge.avg .arc { stroke: var(--avg); } .gauge.poor .arc { stroke: var(--poor); }
+.gauge.good text { fill: var(--good); } .gauge.avg text { fill: var(--avg); } .gauge.poor text { fill: var(--poor); }
+
+.worst { background: var(--avg-bg); color: var(--fg); border-radius: 8px; padding: 12px 16px; font-size: 14px; max-width: 80ch; }
+body { margin: 0; }
+.verdict { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--poor); border-radius: 0 10px 10px 0; padding: 16px 20px; display: grid; gap: 8px; }
+.verdict p { max-width: none; }
+
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font: 500 11.5px var(--f-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+tbody tr:last-child > * { border-bottom: 0; }
+table.metrics th[scope=row] { display: grid; gap: 2px; }
+table.metrics abbr { font: 700 16px var(--f-display); text-decoration: none; }
+table.metrics th span { font-size: 12.5px; color: var(--muted); font-weight: 400; }
+.num2 td:nth-child(2), .num23 td:nth-child(n+2), .num234 td:nth-child(n+2), .num3 td:nth-child(n+2), .num34 td:nth-child(n+3) { white-space: nowrap; text-align: right; }
+.num2 th:nth-child(2), .num23 th:nth-child(n+2), .num234 th:nth-child(n+2), .num3 th:nth-child(n+2), .num34 th:nth-child(n+3) { text-align: right; }
+.pill { display: inline-block; font: 500 13.5px var(--f-mono); padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px; vertical-align: 1px; }
+.pill.good { background: var(--good-bg); color: var(--good); } .pill.good::before { background: var(--good); border-radius: 50%; }
+.pill.avg { background: var(--avg-bg); color: var(--avg); } .pill.avg::before { background: var(--avg); }
+.pill.poor { background: var(--poor-bg); color: var(--poor); } .pill.poor::before { border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 8px solid var(--poor); width: 0; height: 0; }
+.legend-key { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12.5px; color: var(--muted); }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.grid2 > * { min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 12px; align-content: start; }
+.lcpbar { display: grid; gap: 10px; }
+.bar { display: flex; height: 22px; border-radius: 4px; overflow: hidden; gap: 2px; }
+.seg, .legend i { background: var(--seg1); }
+.s-resourceLoadDelay { background: var(--seg2) !important; }
+.s-resourceLoadDuration { background: var(--seg3) !important; }
+.s-elementRenderDelay { background: var(--seg4) !important; }
+.legend { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; }
+.legend b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 4px; }
+.stat .k { font: 500 11.5px var(--f-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.stat .v { font: 700 22px var(--f-display); font-variant-numeric: tabular-nums; }
+.stat .v.poor { color: var(--poor); } .stat .v.avg { color: var(--avg); } .stat .v.good { color: var(--good); }
+.stat .d { font-size: 13px; color: var(--muted); }
+
+.hbars { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.hbars li { display: grid; grid-template-columns: 130px 1fr 80px; gap: 10px; align-items: center; font-size: 13px; }
+.hbars .track { height: 12px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.hbars .fill { display: block; height: 100%; background: var(--accent); }
+.hbars .val { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 12.5px; }
+
+ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.fails { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+ol.plan { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; counter-reset: p; }
+ol.plan li { counter-increment: p; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px 16px 64px; position: relative; display: grid; gap: 6px; }
+ol.plan li::before { content: counter(p); position: absolute; left: 18px; top: 14px; font: 800 26px var(--f-display); color: var(--accent); }
+ol.plan h4 { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+.tag { font: 500 11px var(--f-mono); text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 4px; }
+.tag.high { background: var(--poor-bg); color: var(--poor); }
+.tag.mid { background: var(--avg-bg); color: var(--avg); }
+.tag.low { background: var(--track); color: var(--muted); }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+
+@media (max-width: 520px) {
+  .gauges { grid-template-columns: repeat(2, 1fr); row-gap: 16px; }
+  .hbars li { grid-template-columns: 96px 1fr 70px; }
+  ol.plan li { padding-left: 48px; }
+  ol.plan li::before { left: 14px; font-size: 22px; }
 }
 </style>
 </head>
 <body>
-<div id="tip" hidden></div>
-
-<header class="cover">
-  <div class="wrap">
-    <p class="eyebrow">Relatório de performance · WordPress headless + Astro na Cloudflare</p>
-    <h1>Performance dos sites headless</h1>
-    <p class="intro">Como estão a velocidade das páginas e a carga dos servidores dos 4 sites que passaram a usar o WordPress só para o conteúdo e o Astro, na Cloudflare, para montar as páginas.</p>
-    <dl class="meta">
-      <div><dt>Sites analisados</dt><dd>funquarks.com · certificase.com · kursora.com · newjoinz.com</dd></div>
-      <div><dt>Período (servidor, Cloudflare e API)</dt><dd>28/10 a 03/11/2026 · últimos 7 dias, horário de Brasília</dd></div>
-      <div><dt>Testes de velocidade e de cache</dt><dd>04/11/2026</dd></div>
-      <div><dt>Data do relatório</dt><dd>04/11/2026</dd></div>
-    </dl>
-    <div class="legend-status" id="status-legend"></div>
+<div class="wrap">
+<header>
+  <span class="eyebrow">Relatório de velocidade · página inicial</span>
+  <h1>appszetta.com</h1>
+  <p>Quão rápido a página inicial abre no celular e no computador, o que está deixando ela lenta e o que fazer primeiro.</p>
+  <div class="meta">
+    <span>Medido em <b>2026-11-11 20:28 UTC</b></span>
+    <span>Ferramenta: <b>Google Lighthouse 13.6.0</b></span>
+    <span>Celular simulado: <b>internet de 1,6 Mbps; atraso de 150 ms; processador 4× mais lento</b></span>
   </div>
 </header>
 
-<main>
-<section id="resumo">
-  <div class="wrap">
-    <h2>Resumo em números</h2>
-    <p class="lead">Os resultados mais fortes da nova arquitetura, medidos de 28/10 a 03/11/2026.</p>
-    <div class="cards">
-      <div class="card">
-        <div class="big">63,8%</div>
-        <p class="what">das requisições dos visitantes foram respondidas direto pelo cache da Cloudflare</p>
-        <p class="means">2,16 milhões de 3,38 milhões, sem acionar o servidor. No maior site, a certificase.com, foram 69,2%. O visitante recebe a página de um ponto próximo dele, sem esperar o servidor.</p>
-        <p class="src">Fonte: Cloudflare Analytics (amostrado)</p>
-      </div>
-      <div class="card">
-        <div class="big">80%</div>
-        <p class="what">dos dados entregues aos visitantes não precisaram sair do servidor WordPress</p>
-        <p class="means">Foram 62,5 GB entregues e só 12,3 GB vieram do servidor. A Cloudflare carrega quase todo o peso, e o servidor fica livre.</p>
-        <p class="src">Fonte: Cloudflare Analytics e logs do servidor</p>
-      </div>
-      <div class="card">
-        <div class="big">1,6 por segundo</div>
-        <p class="what">requisições chegando ao servidor WordPress, somando os 4 sites</p>
-        <p class="means">Em média, menos de 1 processo do servidor fica ocupado com esses sites (0,33, estimativa). A carga é baixa e há folga para o tráfego crescer.</p>
-        <p class="src">Fonte: logs do servidor (nginx)</p>
-      </div>
-      <div class="card">
-        <div class="big">até 0,53 s</div>
-        <p class="what">é o tempo em que o servidor responde 95% dos pedidos, em todos os 4 sites</p>
-        <p class="means">Vai de 0,29 s (kursora.com) a 0,53 s (newjoinz.com). Cada pedido ao WordPress é atendido rápido.</p>
-        <p class="src">Fonte: logs do servidor (nginx), p95</p>
-      </div>
-      <div class="card">
-        <div class="big">99,91%</div>
-        <p class="what">das requisições ao servidor foram atendidas sem erro</p>
-        <p class="means">Foram 816 erros em 939 mil requisições, em 7 dias. É um site estável para o visitante e para os anúncios.</p>
-        <p class="src">Fonte: logs do servidor (nginx), erros 5xx</p>
-      </div>
-      <div class="card">
-        <div class="big">92 a 97</div>
-        <p class="what">é a nota de velocidade da funquarks.com no teste do Google (Lighthouse), na faixa “bom”</p>
-        <p class="means">Vale para a home, a categoria e o post. Mostra o potencial da nova plataforma quando os scripts de marketing só carregam depois da primeira interação do visitante.</p>
-        <p class="src">Fonte: Lighthouse no celular, mediana de 3 testes</p>
-      </div>
-    </div>
+<section>
+  <div class="sec-head"><span class="eyebrow">Resumo</span><h2>Notas de 0 a 100</h2></div>
+  <div class="scores"><div class="device"><h3>Mobile</h3><div class="gauges"><figure class="gauge poor">
+<svg viewBox="0 0 100 100" role="img" aria-label="Performance: 37">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="97.6 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">37</text></svg>
+<figcaption>Performance</figcaption></figure><figure class="gauge good">
+<svg viewBox="0 0 100 100" role="img" aria-label="Acessibilidade: 92">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="242.8 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">92</text></svg>
+<figcaption>Acessibilidade</figcaption></figure><figure class="gauge avg">
+<svg viewBox="0 0 100 100" role="img" aria-label="Boas práticas: 50">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="131.9 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">50</text></svg>
+<figcaption>Boas práticas</figcaption></figure><figure class="gauge good">
+<svg viewBox="0 0 100 100" role="img" aria-label="SEO: 92">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="242.8 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">92</text></svg>
+<figcaption>SEO</figcaption></figure></div></div><div class="device"><h3>Desktop</h3><div class="gauges"><figure class="gauge avg">
+<svg viewBox="0 0 100 100" role="img" aria-label="Performance: 53">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="139.9 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">53</text></svg>
+<figcaption>Performance</figcaption></figure><figure class="gauge good">
+<svg viewBox="0 0 100 100" role="img" aria-label="Acessibilidade: 92">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="242.8 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">92</text></svg>
+<figcaption>Acessibilidade</figcaption></figure><figure class="gauge avg">
+<svg viewBox="0 0 100 100" role="img" aria-label="Boas práticas: 69">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="182.1 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">69</text></svg>
+<figcaption>Boas práticas</figcaption></figure><figure class="gauge good">
+<svg viewBox="0 0 100 100" role="img" aria-label="SEO: 92">
+<circle cx="50" cy="50" r="42" class="track"/>
+<circle cx="50" cy="50" r="42" class="arc" stroke-dasharray="242.8 263.9" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" dominant-baseline="central" text-anchor="middle">92</text></svg>
+<figcaption>SEO</figcaption></figure></div></div></div>
+  <div class="legend-key"><span><span class="pill good">90–100 bom</span></span><span><span class="pill avg">50–89 precisa melhorar</span></span><span><span class="pill poor">0–49 ruim</span></span></div>
+  <div class="verdict">
+    <h4>Em uma frase</h4>
+    <p>No celular, a página demora para mostrar o conteúdo e depois fica vários segundos travada carregando anúncios e ferramentas de rastreamento. Além disso, o servidor leva cerca de 1 segundo só para começar a responder, porque a página não fica guardada na Cloudflare.</p>
   </div>
 </section>
 
-<section id="experiencia">
-  <div class="wrap">
-    <h2>Experiência do usuário</h2>
-    <p class="lead">Core Web Vitals são as métricas que o Google usa para medir a experiência do visitante e que ele considera na busca. Nas métricas de tempo, as cores usam as faixas deste relatório: bom até 5 s, precisa melhorar até 8 s e ruim acima de 8 s. No CLS, usam as faixas oficiais do Google.</p>
-
-    <p class="note">Os indicadores abaixo foram medidos em <b>laboratório</b>: um celular simulado, com rede 4G lenta e processador mais lento, 3 testes por página (mediana). O teste no computador não foi feito. O INP só existe com visitantes reais. O indicador de laboratório mais próximo é o TBT, na seção seguinte.</p>
-
-    <div class="stack">
-      <div class="panel">
-        <h3>LCP: quanto tempo o conteúdo principal leva para aparecer</h3>
-        <p class="def">Laboratório, celular. Quanto menor, melhor.</p>
-        <div id="c-lcp"></div>
-        <p class="takeaway"><b>11 das 12 páginas</b> estão na faixa “bom”. A exceção é a home da newjoinz.com (5,1 s). As páginas com LCP acima de 4 s são as que carregam de 704 a 1.224 KB de scripts de terceiros (marketing e anúncios) junto com o conteúdo.</p>
-      </div>
-      <div class="grid2">
-        <div class="panel">
-          <h3>CLS: quanto o conteúdo “pula” de lugar enquanto carrega</h3>
-          <p class="def">Laboratório, celular. Quanto menor, melhor.</p>
-          <div id="c-cls"></div>
-          <p class="takeaway"><b>11 das 12 páginas</b> estão na faixa “bom”. A exceção é o post da kursora.com: um bloco do texto muda de lugar em 2 dos 3 testes.</p>
-        </div>
-        <div class="panel">
-          <h3>FCP: quanto tempo até aparecer o primeiro texto ou imagem</h3>
-          <p class="def">Laboratório, celular. Quanto menor, melhor.</p>
-          <div id="c-fcp"></div>
-          <p class="takeaway"><b>As 12 páginas</b> estão na faixa “bom”. Os mais lentos são os posts da certificase.com, kursora.com e newjoinz.com (3,0 a 4,2 s), que carregam anúncios e scripts de marketing logo de início.</p>
-        </div>
-      </div>
-    </div>
+<section>
+  <div class="sec-head"><span class="eyebrow">Experiência do visitante</span><h2>Quanto tempo o visitante espera</h2><p class="muted">Pior valor entre as medições. As siglas pequenas são os nomes oficiais usados pelo Google.</p></div>
+  <div class="tablewrap"><table class="metrics">
+    <thead><tr><th scope="col">O que medimos</th><th scope="col">Meta do Google</th><th scope="col">Mobile</th><th scope="col">Desktop</th></tr></thead>
+    <tbody><tr><th scope=row><abbr title='LCP'>Conteúdo principal aparece</abbr><span>LCP</span></th><td class=muted>até 2,5 s</td><td><span class="pill poor">5,8 s</span></td><td><span class="pill avg">2,2 s</span></td></tr><tr><th scope=row><abbr title='FCP'>Primeira coisa aparece na tela</abbr><span>FCP</span></th><td class=muted>até 1,8 s</td><td><span class="pill avg">2,0 s</span></td><td><span class="pill good">0,7 s</span></td></tr><tr><th scope=row><abbr title='TBT'>Tempo travado, sem responder ao toque</abbr><span>TBT</span></th><td class=muted>até 200 ms</td><td><span class="pill poor">6.260 ms</span></td><td><span class="pill poor">1.040 ms</span></td></tr><tr><th scope=row><abbr title='CLS'>Pulos de layout enquanto carrega</abbr><span>CLS</span></th><td class=muted>até 0,1</td><td><span class="pill good">0,086</span></td><td><span class="pill good">0,001</span></td></tr><tr><th scope=row><abbr title='Speed Index'>Tela visualmente completa</abbr><span>Speed Index</span></th><td class=muted>até 3,4 s</td><td><span class="pill poor">13,8 s</span></td><td><span class="pill poor">2,9 s</span></td></tr><tr><th scope=row><abbr title='TTI'>Página pronta para uso</abbr><span>TTI</span></th><td class=muted>até 3,8 s</td><td><span class="pill poor">22,8 s</span></td><td><span class="pill poor">4,7 s</span></td></tr><tr><th scope=row><abbr title='TTFB'>Resposta do servidor</abbr><span>TTFB</span></th><td class=muted>até 800 ms</td><td><span class="pill avg">1.034 ms</span></td><td><span class="pill avg">979 ms</span></td></tr></tbody>
+  </table></div>
+  <div class="panel">
+    <h4>Onde se perde tempo até o conteúdo principal aparecer</h4>
+    <p class="muted">Cada cor é uma etapa. Estes tempos foram medidos sem simular a internet lenta, então servem para comparar as etapas entre si. O tempo total no celular está na tabela acima.</p>
+    <div class="lcpbar"><h4>Mobile</h4><div class="bar"><span class="seg s-timeToFirstByte" style="flex:1040" title="Esperando o servidor: 1040 ms"></span><span class="seg s-elementRenderDelay" style="flex:432" title="Desenhando na tela: 432 ms"></span></div><ul class="legend"><li><i class="s-timeToFirstByte"></i>Esperando o servidor <b>1.040 ms</b></li><li><i class="s-elementRenderDelay"></i>Desenhando na tela <b>432 ms</b></li></ul></div><div class="lcpbar"><h4>Desktop</h4><div class="bar"><span class="seg s-timeToFirstByte" style="flex:394" title="Esperando o servidor: 394 ms"></span><span class="seg s-resourceLoadDelay" style="flex:17" title="Fila até baixar a imagem: 17 ms"></span><span class="seg s-resourceLoadDuration" style="flex:218" title="Baixando a imagem: 218 ms"></span><span class="seg s-elementRenderDelay" style="flex:372" title="Desenhando na tela: 372 ms"></span></div><ul class="legend"><li><i class="s-timeToFirstByte"></i>Esperando o servidor <b>394 ms</b></li><li><i class="s-resourceLoadDelay"></i>Fila até baixar a imagem <b>17 ms</b></li><li><i class="s-resourceLoadDuration"></i>Baixando a imagem <b>218 ms</b></li><li><i class="s-elementRenderDelay"></i>Desenhando na tela <b>372 ms</b></li></ul></div>
   </div>
 </section>
 
-<section id="velocidade">
-  <div class="wrap">
-    <h2>Velocidade das páginas</h2>
-    <p class="lead">O teste Lighthouse do Google, no celular, com 3 execuções por página (mediana), em três tipos de página por site: home, uma categoria e um post.</p>
+<section>
+  <div class="sec-head"><span class="eyebrow">Cache</span><h2>O site guarda cópias prontas?</h2><p class="muted">Cache é uma cópia pronta da página ou do arquivo. Com cache, o visitante recebe tudo mais rápido e o servidor trabalha menos.</p></div>
+  <div class="stats">
+    <div class="stat"><span class="k">Página na Cloudflare</span><span class="v poor">Não guarda</span><span class="d">Resposta: <code>DYNAMIC</code>. Toda visita vai até o servidor.</span></div>
+    <div class="stat"><span class="k">Página no servidor</span><span class="v good">Guarda</span><span class="d">Resposta: <code>hit</code>. Mesmo assim, demora cerca de 1 s.</span></div>
+    <div class="stat"><span class="k">Pior resposta do servidor (5 testes)</span><span class="v avg">1.119 ms</span><span class="d">Medições: 1.119 ms · 1.046 ms · 334 ms · 342 ms · 983 ms</span></div>
+    <div class="stat"><span class="k">Arquivos guardados por pouco tempo</span><span class="v avg">51</span><span class="d">Quem volta ao site baixa de novo 1.154 KiB. Os arquivos do próprio site ficam guardados por apenas 1 h a 12 h.</span></div>
+  </div>
+  <p>Imagens, estilos e scripts deveriam ficar guardados no navegador do visitante por 1 ano. Os maiores arquivos que hoje expiram cedo:</p>
+  <div class="tablewrap"><table class="num3"><thead><tr><th scope=col>Arquivo</th><th scope=col>Fica guardado por</th><th scope=col>Tamanho</th></tr></thead><tbody><tr><td><code title="https://appszetta.com/wp-content/uploads/2026/07/humor-768x439.png">appszetta.com/wp-content/uploads/2026/07/humor-768x439.png</code></td><td>12 h</td><td>420 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2026/07/honestidade-em-perfis-de-namoro-768x439.png">appszetta.com/wp-content/uploads/2026/07/honestidade-em-perfis-de-nam…</code></td><td>12 h</td><td>391 KiB</td></tr><tr><td><code title="https://connect.facebook.net/signals/config/1999835817231075?v=2.9.439&amp;r=stable&amp;domain=appszetta.com&amp;im=1&amp;hme=1f127d11ce7bba675ee077e129c6ec7e07038113ad3e920301e60f2f865dc776&amp;ex_m=119%2C243%2C172%2C27%2C82%2C83%2C163%2C78%2C77%2C11%2C182%2C102%2C20%2C154%2C142%2C46%2C85%2C90%2C184%2C111%2C150%2C177%2C8%2C4%2C5%2C7%2C6%2C3%2C103%2C116%2C162%2C72%2C186%2C110%2C185%2C212%2C264%2C37%2C84%2C284%2C283%2C282%2C14%2C25%2C28%2C40%2C62%2C118%2C68%2C10%2C73%2C112%2C113%2C114%2C120%2C145%2C38%2C36%2C147%2C148%2C149%2C144%2C143%2C173%2C86%2C176%2C174%2C175%2C57%2C69%2C67%2C138%2C19%2C180%2C52%2C334%2C335%2C336%2C333%2C32%2C17%2C31%2C18%2C33%2C34%2C35%2C55%2C164%2C87%2C127%2C22%2C24%2C51%2C47%2C49%2C48%2C95%2C104%2C108%2C125%2C161%2C165%2C53%2C126%2C29%2C26%2C134%2C79%2C43%2C167%2C166%2C168%2C158%2C156%2C30%2C42%2C66%2C124%2C179%2C80%2C21%2C129%2C93%2C76%2C23%2C97%2C98%2C131%2C96%2C152%2C151%2C155%2C109%2C178%2C181%2C41%2C350%2C372%2C257%2C239%2C70%2C240%2C238%2C375%2C366%2C59%2C258%2C122%2C146%2C92%2C136%2C61%2C54%2C56%2C128%2C135%2C141%2C140%2C65%2C74%2C169%2C88%2C89%2C130%2C44%2C39%2C60%2C63%2C115%2C183%2C1%2C139%2C16%2C137%2C12%2C2%2C64%2C105%2C15%2C75%2C71%2C133%2C101%2C100%2C188%2C189%2C106%2C107%2C9%2C117%2C187%2C58%2C159%2C99%2C91%2C81%2C132%2C121%2C170%2C50%2C160%2C0%2C94%2C153%2C157%2C171%2C45%2C123%2C13%2C190">connect.facebook.net/signals/config/1999835817231075</code></td><td>20 min</td><td>150 KiB</td></tr><tr><td><code title="https://connect.facebook.net/en_US/fbevents.js">connect.facebook.net/en_US/fbevents.js</code></td><td>20 min</td><td>114 KiB</td></tr><tr><td><code title="https://autozep.adzep.io/express2.0.js">autozep.adzep.io/express2.0.js</code></td><td>2 min</td><td>104 KiB</td></tr><tr><td><code title="https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js">pagead2.googlesyndication.com/pagead/managed/js/activeview/current/uf…</code></td><td>1 h</td><td>75 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2025/10/Fitness-Dating-768x439.jpeg">appszetta.com/wp-content/uploads/2025/10/Fitness-Dating-768x439.jpeg</code></td><td>12 h</td><td>73 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2026/09/Vestidos-da-Shein-768x429.jpeg">appszetta.com/wp-content/uploads/2026/09/Vestidos-da-Shein-768x429.jp…</code></td><td>12 h</td><td>60 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2025/12/Vegan-Dating-App-Profiles-768x439.jpeg">appszetta.com/wp-content/uploads/2025/12/Vegan-Dating-App-Profiles-76…</code></td><td>12 h</td><td>55 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2025/12/Diet-Specific-Dating-Apps-768x439.jpeg">appszetta.com/wp-content/uploads/2025/12/Diet-Specific-Dating-Apps-76…</code></td><td>12 h</td><td>53 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2025/12/Pet-Lover-Dating-App-Profiles-768x439.jpeg">appszetta.com/wp-content/uploads/2025/12/Pet-Lover-Dating-App-Profile…</code></td><td>12 h</td><td>52 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2026/06/comunicacao-digital-768x439.jpeg">appszetta.com/wp-content/uploads/2026/06/comunicacao-digital-768x439.…</code></td><td>12 h</td><td>52 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2025/12/Quiet-Dating-Apps-768x439.jpeg">appszetta.com/wp-content/uploads/2025/12/Quiet-Dating-Apps-768x439.jp…</code></td><td>12 h</td><td>43 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/2025/12/Career-Oriented-Dating-Apps-768x439.jpeg">appszetta.com/wp-content/uploads/2025/12/Career-Oriented-Dating-Apps-…</code></td><td>12 h</td><td>42 KiB</td></tr></tbody></table></div>
+</section>
 
-    <div class="panel">
-      <h3>Nota de velocidade (0 a 100)</h3>
-      <p class="def">É a nota geral do teste do Google. 90 ou mais é bom, de 50 a 89 precisa melhorar e abaixo de 50 é ruim.</p>
-      <div class="tw"><table class="scores" id="score-table"></table></div>
-    </div>
+<section>
+  <div class="sec-head"><span class="eyebrow">Peso</span><h2>Quanto a página pesa</h2></div>
+  <div class="grid2"><div class="panel"><div><h4>Mobile <span class=muted>· 3.283 KiB em 147 arquivos, 57% de terceiros</span></h4><ul class="hbars"><li><span class="lbl">Imagens (35)</span><span class="track"><span class="fill" style="width:31.4%"></span></span><span class="val">1.535 KiB</span></li><li><span class="lbl">JavaScript (48)</span><span class="track"><span class="fill" style="width:29.7%"></span></span><span class="val">1.450 KiB</span></li><li><span class="lbl">Outros (45)</span><span class="track"><span class="fill" style="width:3.2%"></span></span><span class="val">155 KiB</span></li><li><span class="lbl">HTML (12)</span><span class="track"><span class="fill" style="width:1.8%"></span></span><span class="val">88 KiB</span></li><li><span class="lbl">Fontes (2)</span><span class="track"><span class="fill" style="width:1.0%"></span></span><span class="val">46 KiB</span></li><li><span class="lbl">CSS (5)</span><span class="track"><span class="fill" style="width:0.2%"></span></span><span class="val">8 KiB</span></li></ul></div><div><h4>Desktop <span class=muted>· 6.391 KiB em 107 arquivos, 24% de terceiros</span></h4><ul class="hbars"><li><span class="lbl">Imagens (22)</span><span class="track"><span class="fill" style="width:98.0%"></span></span><span class="val">4.787 KiB</span></li><li><span class="lbl">JavaScript (40)</span><span class="track"><span class="fill" style="width:28.9%"></span></span><span class="val">1.411 KiB</span></li><li><span class="lbl">Outros (30)</span><span class="track"><span class="fill" style="width:2.0%"></span></span><span class="val">97 KiB</span></li><li><span class="lbl">HTML (8)</span><span class="track"><span class="fill" style="width:1.4%"></span></span><span class="val">67 KiB</span></li><li><span class="lbl">Fontes (1)</span><span class="track"><span class="fill" style="width:0.4%"></span></span><span class="val">20 KiB</span></li><li><span class="lbl">CSS (6)</span><span class="track"><span class="fill" style="width:0.2%"></span></span><span class="val">10 KiB</span></li></ul></div></div></div>
+  <p>No computador, a página baixa imagens em tamanho original para mostrar miniaturas pequenas. Uma imagem de quase 1,5 MB aparece numa caixa de 372 pixels de largura. Converter para WebP e servir no tamanho certo resolve.</p>
+  <div class="tablewrap"><table class="num34"><thead><tr><th scope=col>Dispositivo</th><th scope=col>Imagem</th><th scope=col>Transferido</th><th scope=col>Economia possível</th></tr></thead><tbody><tr><td>Mobile</td><td><code title="https://appszetta.com/wp-content/uploads/2026/07/humor-768x439.png">humor-768x439.png</code></td><td>419 KiB</td><td>373 KiB</td></tr><tr><td>Mobile</td><td><code title="https://appszetta.com/wp-content/uploads/2026/07/honestidade-em-perfis-de-namoro-768x439.png">honestidade-em-perfis-de-namoro-768x439.png</code></td><td>390 KiB</td><td>344 KiB</td></tr><tr><td>Mobile</td><td><code title="https://s0.2mdn.net/sadbundle/7124852934823384001/geral-menino-320x100-px/77cda0121233b1b64fa27e4ed3faf594.png">77cda0121233b1b64fa27e4ed3faf594.png</code></td><td>49 KiB</td><td>37 KiB</td></tr><tr><td>Mobile</td><td><code title="https://appszetta.com/wp-content/uploads/2025/10/Fitness-Dating-768x439.jpeg">Fitness-Dating-768x439.jpeg</code></td><td>72 KiB</td><td>17 KiB</td></tr><tr><td>Desktop</td><td><code title="https://appszetta.com/wp-content/uploads/2026/07/humor.png">humor.png</code></td><td>1.527 KiB</td><td>1.511 KiB</td></tr><tr><td>Desktop</td><td><code title="https://appszetta.com/wp-content/uploads/2026/07/honestidade-em-perfis-de-namoro.png">honestidade-em-perfis-de-namoro.png</code></td><td>1.442 KiB</td><td>1.426 KiB</td></tr><tr><td>Desktop</td><td><code title="https://appszetta.com/wp-content/uploads/2026/09/Vestidos-da-Shein.jpeg">Vestidos-da-Shein.jpeg</code></td><td>838 KiB</td><td>822 KiB</td></tr><tr><td>Desktop</td><td><code title="https://appszetta.com/wp-content/uploads/2025/10/Fitness-Dating.jpeg">Fitness-Dating.jpeg</code></td><td>153 KiB</td><td>138 KiB</td></tr></tbody></table></div>
+</section>
 
-    <div class="note">
-      <b>O que separa a funquarks.com dos outros três sites são os scripts de terceiros, não o código do site.</b>
-      O código do próprio site pesa só 7 a 22 KB de JavaScript em todas as páginas.
-      Na funquarks.com, o Google Tag Manager só carrega depois da primeira interação do visitante.
-      Na certificase.com, kursora.com e newjoinz.com, o Google Tag Manager, o pixel do Facebook e o Clarity carregam junto com a página, somando 704 a 1.327 KB de scripts de terceiros, e nos posts entram também os anúncios.
-      Ressalva: o teste não interage com a página, então a nota da funquarks.com não inclui o custo desses scripts, que aparece depois do primeiro toque.
-    </div>
-
-    <div class="stack">
-      <div class="panel">
-        <h3>TBT: quanto tempo a página fica travada processando scripts</h3>
-        <p class="def">Nesse tempo, a página não responde a toques. Quanto menor, melhor.</p>
-        <div id="c-tbt"></div>
-      </div>
-      <div class="panel">
-        <h3>Peso da página e o que ela baixa</h3>
-        <p class="def">Total de dados baixados para abrir a página no celular, separado pela origem do código. Abaixo do nome da página está quantos arquivos ela baixa.</p>
-        <div id="c-weight"></div>
-        <p class="takeaway">Na certificase.com, kursora.com e newjoinz.com, os scripts de terceiros pesam de 56 a 102 vezes o código do próprio site. Na home da certificase.com, 3,1 MB dos 3,8 MB são imagens e outros arquivos, puxados por imagens PNG de 440 a 700 KB cada.</p>
-      </div>
-    </div>
-
-    <details class="tv">
-      <summary>Ver as páginas testadas</summary>
-      <div class="tw"><table id="pages-table"></table></div>
-    </details>
+<section>
+  <div class="sec-head"><span class="eyebrow">Anúncios e rastreamento</span><h2>O que trava a página</h2><p class="muted">Enquanto o navegador processa scripts, a página não responde a toques e rolagem.</p></div>
+  <div class="stats">
+    <div class="stat"><span class="k">Processamento total (mobile)</span><span class="v poor">15,3 s</span><span class="d">Tempo de trabalho do celular para montar a página.</span></div>
+    <div class="stat"><span class="k">Só com scripts</span><span class="v poor">10,0 s</span><span class="d">Ler e executar código JavaScript.</span></div>
+    <div class="stat"><span class="k">Travamentos</span><span class="v poor">20</span><span class="d">Momentos em que a página congela.</span></div>
+    <div class="stat"><span class="k">Código baixado e não usado</span><span class="v avg">488 KiB</span><span class="d">Peso desperdiçado no carregamento.</span></div>
+  </div>
+  <h4>Serviços externos que mais pesam</h4>
+  <div class="tablewrap"><table class="num234"><thead><tr><th scope=col>Terceiro</th><th scope=col>Transferido</th><th scope=col>Processamento (mobile)</th><th scope=col>Processamento (desktop)</th></tr></thead><tbody><tr><td>Facebook</td><td>293 KiB</td><td>474 ms</td><td>366 ms</td></tr><tr><td>Google/Doubleclick Ads</td><td>423 KiB</td><td>351 ms</td><td>314 ms</td></tr><tr><td>Google Tag Manager</td><td>316 KiB</td><td>283 ms</td><td>619 ms</td></tr><tr><td>miramidia.com</td><td>91 KiB</td><td>146 ms</td><td>66 ms</td></tr><tr><td>Google FundingChoices</td><td>77 KiB</td><td>66 ms</td><td>53 ms</td></tr><tr><td>adzep.io</td><td>111 KiB</td><td>41 ms</td><td>126 ms</td></tr><tr><td>adtrafficquality.google</td><td>22 KiB</td><td>37 ms</td><td>23 ms</td></tr><tr><td>Cloudflare</td><td>10 KiB</td><td>25 ms</td><td>26 ms</td></tr><tr><td>Google Fonts</td><td>22 KiB</td><td>0 ms</td><td>1 ms</td></tr></tbody></table></div>
+  <div class="grid2">
+    <div class="panel"><h4>Scripts que mais usam o processador (mobile)</h4><div class="tablewrap"><table class="num23"><thead><tr><th scope=col>Script</th><th scope=col>Tempo total</th><th scope=col>Executando</th></tr></thead><tbody><tr><td><code title="https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202611060101/pubads_impl.js">securepubads.g.doubleclick.net/pagead/managed/js/gpt/m20261…</code></td><td>3.142 ms</td><td>2.039 ms</td></tr><tr><td><code title="https://fundingchoicesmessages.google.com/i/23309352096?ers=3">fundingchoicesmessages.google.com/i/23309352096</code></td><td>1.922 ms</td><td>1.787 ms</td></tr><tr><td><code title="https://appszetta.com/">appszetta.com/</code></td><td>1.420 ms</td><td>43 ms</td></tr><tr><td><code title="https://connect.facebook.net/en_US/fbevents.js">connect.facebook.net/en_US/fbevents.js</code></td><td>1.017 ms</td><td>813 ms</td></tr><tr><td><code title="https://connect.facebook.net/signals/config/1999835817231075?v=2.9.439&amp;r=stable&amp;domain=appszetta.com&amp;im=1&amp;hme=1f127d11ce7bba675ee077e129c6ec7e07038113ad3e920301e60f2f865dc776&amp;ex_m=119%2C243%2C172%2C27%2C82%2C83%2C163%2C78%2C77%2C11%2C182%2C102%2C20%2C154%2C142%2C46%2C85%2C90%2C184%2C111%2C150%2C177%2C8%2C4%2C5%2C7%2C6%2C3%2C103%2C116%2C162%2C72%2C186%2C110%2C185%2C212%2C264%2C37%2C84%2C284%2C283%2C282%2C14%2C25%2C28%2C40%2C62%2C118%2C68%2C10%2C73%2C112%2C113%2C114%2C120%2C145%2C38%2C36%2C147%2C148%2C149%2C144%2C143%2C173%2C86%2C176%2C174%2C175%2C57%2C69%2C67%2C138%2C19%2C180%2C52%2C334%2C335%2C336%2C333%2C32%2C17%2C31%2C18%2C33%2C34%2C35%2C55%2C164%2C87%2C127%2C22%2C24%2C51%2C47%2C49%2C48%2C95%2C104%2C108%2C125%2C161%2C165%2C53%2C126%2C29%2C26%2C134%2C79%2C43%2C167%2C166%2C168%2C158%2C156%2C30%2C42%2C66%2C124%2C179%2C80%2C21%2C129%2C93%2C76%2C23%2C97%2C98%2C131%2C96%2C152%2C151%2C155%2C109%2C178%2C181%2C41%2C350%2C372%2C257%2C239%2C70%2C240%2C238%2C375%2C366%2C59%2C258%2C122%2C146%2C92%2C136%2C61%2C54%2C56%2C128%2C135%2C141%2C140%2C65%2C74%2C169%2C88%2C89%2C130%2C44%2C39%2C60%2C63%2C115%2C183%2C1%2C139%2C16%2C137%2C12%2C2%2C64%2C105%2C15%2C75%2C71%2C133%2C101%2C100%2C188%2C189%2C106%2C107%2C9%2C117%2C187%2C58%2C159%2C99%2C91%2C81%2C132%2C121%2C170%2C50%2C160%2C0%2C94%2C153%2C157%2C171%2C45%2C123%2C13%2C190">connect.facebook.net/signals/config/1999835817231075</code></td><td>841 ms</td><td>717 ms</td></tr><tr><td><code title="https://dash.miramidia.com/plugin-adzep-v2.1.6.js">dash.miramidia.com/plugin-adzep-v2.1.6.js</code></td><td>703 ms</td><td>418 ms</td></tr><tr><td><code title="https://securepubads.g.doubleclick.net/tag/js/gpt.js">securepubads.g.doubleclick.net/tag/js/gpt.js</code></td><td>660 ms</td><td>633 ms</td></tr></tbody></table></div></div>
+    <div class="panel"><h4>Scripts com mais código sem uso (mobile)</h4><div class="tablewrap"><table class="num23"><thead><tr><th scope=col>Script</th><th scope=col>Tamanho</th><th scope=col>Não usado</th></tr></thead><tbody><tr><td><code title="https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202611060101/pubads_impl.js">securepubads.g.doubleclick.net/pagead/managed/js/gpt/m20261…</code></td><td>216 KiB</td><td>106 KiB (49%)</td></tr><tr><td><code title="https://autozep.adzep.io/express2.0.js">autozep.adzep.io/express2.0.js</code></td><td>104 KiB</td><td>87 KiB (84%)</td></tr><tr><td><code title="https://www.googletagmanager.com/gtag/js?id=G-DS44QYRBZ0&amp;cx=c&amp;gtm=4e6ba0">www.googletagmanager.com/gtag/js</code></td><td>177 KiB</td><td>76 KiB (43%)</td></tr><tr><td><code title="https://www.googletagmanager.com/gtm.js?id=GTM-T5F4J2D3">www.googletagmanager.com/gtm.js</code></td><td>139 KiB</td><td>66 KiB (47%)</td></tr><tr><td><code title="https://connect.facebook.net/signals/config/1999835817231075?v=2.9.439&amp;r=stable&amp;domain=appszetta.com&amp;im=1&amp;hme=1f127d11ce7bba675ee077e129c6ec7e07038113ad3e920301e60f2f865dc776&amp;ex_m=119%2C243%2C172%2C27%2C82%2C83%2C163%2C78%2C77%2C11%2C182%2C102%2C20%2C154%2C142%2C46%2C85%2C90%2C184%2C111%2C150%2C177%2C8%2C4%2C5%2C7%2C6%2C3%2C103%2C116%2C162%2C72%2C186%2C110%2C185%2C212%2C264%2C37%2C84%2C284%2C283%2C282%2C14%2C25%2C28%2C40%2C62%2C118%2C68%2C10%2C73%2C112%2C113%2C114%2C120%2C145%2C38%2C36%2C147%2C148%2C149%2C144%2C143%2C173%2C86%2C176%2C174%2C175%2C57%2C69%2C67%2C138%2C19%2C180%2C52%2C334%2C335%2C336%2C333%2C32%2C17%2C31%2C18%2C33%2C34%2C35%2C55%2C164%2C87%2C127%2C22%2C24%2C51%2C47%2C49%2C48%2C95%2C104%2C108%2C125%2C161%2C165%2C53%2C126%2C29%2C26%2C134%2C79%2C43%2C167%2C166%2C168%2C158%2C156%2C30%2C42%2C66%2C124%2C179%2C80%2C21%2C129%2C93%2C76%2C23%2C97%2C98%2C131%2C96%2C152%2C151%2C155%2C109%2C178%2C181%2C41%2C350%2C372%2C257%2C239%2C70%2C240%2C238%2C375%2C366%2C59%2C258%2C122%2C146%2C92%2C136%2C61%2C54%2C56%2C128%2C135%2C141%2C140%2C65%2C74%2C169%2C88%2C89%2C130%2C44%2C39%2C60%2C63%2C115%2C183%2C1%2C139%2C16%2C137%2C12%2C2%2C64%2C105%2C15%2C75%2C71%2C133%2C101%2C100%2C188%2C189%2C106%2C107%2C9%2C117%2C187%2C58%2C159%2C99%2C91%2C81%2C132%2C121%2C170%2C50%2C160%2C0%2C94%2C153%2C157%2C171%2C45%2C123%2C13%2C190">connect.facebook.net/signals/config/1999835817231075</code></td><td>149 KiB</td><td>42 KiB (28%)</td></tr><tr><td><code title="https://dash.miramidia.com/plugin-adzep-v2.1.6.js">dash.miramidia.com/plugin-adzep-v2.1.6.js</code></td><td>90 KiB</td><td>38 KiB (42%)</td></tr><tr><td><code title="https://fundingchoicesmessages.google.com/i/23309352096?ers=3">fundingchoicesmessages.google.com/i/23309352096</code></td><td>70 KiB</td><td>37 KiB (53%)</td></tr><tr><td><code title="https://connect.facebook.net/en_US/fbevents.js">connect.facebook.net/en_US/fbevents.js</code></td><td>112 KiB</td><td>36 KiB (32%)</td></tr></tbody></table></div></div>
   </div>
 </section>
 
-<section id="servidor">
-  <div class="wrap">
-    <h2>Servidor e entrega</h2>
-    <p class="lead">A Cloudflare (a “edge”) recebe todos os visitantes. O que ela tem pronto no cache, ela entrega na hora. O resto passa pelo Worker, que monta a página buscando o conteúdo no servidor WordPress (a “origem”). Período: 28/10 a 03/11/2026.</p>
-
-    <div class="grid2">
-      <div class="panel">
-        <h3>Cache hit ratio: quanto foi respondido direto pelo cache</h3>
-        <p class="def">É a parte das requisições dos visitantes que não precisou do Worker nem do servidor.</p>
-        <div id="c-cache"></div>
-      </div>
-      <div class="panel">
-        <h3>Requisições: Cloudflare x servidor</h3>
-        <p class="def">São as requisições de visitantes na Cloudflare e as que chegaram ao servidor WordPress.</p>
-        <div id="c-req"></div>
-        <p class="takeaway">Na funquarks.com, o servidor recebe mais requisições do que a Cloudflare, porque o Worker busca no WordPress os textos de cada página que não está em cache.</p>
-      </div>
-    </div>
-
-    <div class="grid2" style="margin-top:16px">
-      <div class="panel">
-        <h3>Dados entregues: Cloudflare x servidor</h3>
-        <p class="def">São os dados entregues aos visitantes e os que saíram do servidor WordPress, em GB.</p>
-        <div id="c-bytes"></div>
-      </div>
-      <div class="panel">
-        <h3>Tempo de resposta do servidor (p50, p95, p99)</h3>
-        <p class="def">Mostra em quanto tempo saem metade (p50), 95% (p95) e 99% (p99) das respostas do WordPress.</p>
-        <div id="c-resp"></div>
-      </div>
-    </div>
-
-    <div class="grid2" style="margin-top:16px">
-      <div class="panel">
-        <h3>Taxa de erros do servidor (5xx)</h3>
-        <p class="def">É a parte das requisições que falhou no servidor. Quanto menor, melhor.</p>
-        <div id="c-5xx"></div>
-      </div>
-      <div class="panel">
-        <h3>Processos PHP ocupados por site (estimativa)</h3>
-        <p class="def">Quantos “atendentes” do servidor ficam ocupados com cada site, em média e no pior minuto. É uma estimativa feita a partir do tempo de resposta, porque a coleta por site não existia no período.</p>
-        <div id="c-workers"></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>CPU e memória do servidor</h3>
-      <p class="def">Os 4 sites dividem o servidor WEB-SCALE com cerca de 40 sites WordPress, então os números abaixo são do servidor inteiro. Em 01/11, por volta das 19h, ele mudou de máquina, e cada máquina aparece separada.</p>
-      <div class="grid2">
-        <div>
-          <div class="grp">Máquina A · x86, 32 GB <small>28/10 a 01/11 (~19h15)</small></div>
-          <div id="c-srv-a"></div>
-          <p class="def" style="margin-top:8px">Processos PHP-FPM: indisponível (não havia coleta nesta máquina).</p>
-        </div>
-        <div>
-          <div class="grp">Máquina B · Graviton, 32 GB <small>01/11 (~18h20) a 03/11</small></div>
-          <div id="c-srv-b"></div>
-          <p class="def" style="margin-top:8px">Processos PHP-FPM no servidor: 46 em média e 77 no pico. Memória dos processos PHP: 6,9 GB em média e 11,7 GB no pico. Memória e processos são medidos desde 01/11, ~20h24.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>REST API do WordPress: a consulta de posts</h3>
-      <p class="def">A REST API é o canal por onde o site pede os textos ao WordPress. Nos 4 sites, a consulta mais chamada é a de posts (<code>/wp/v2/posts</code>). O gráfico mostra o tempo dela no p95 e no p99.</p>
-      <div id="c-rest"></div>
-      <details class="tv">
-        <summary>Ver os 10 endpoints mais chamados de cada site</summary>
-        <div class="tw"><table id="rest-table"></table></div>
-      </details>
-    </div>
-
-    <div class="panel">
-      <h3>Primeira visita x visita seguinte (TTFB)</h3>
-      <p class="def">É quanto tempo leva até a página começar a chegar. Medimos duas requisições seguidas a cada categoria e post em 04/11/2026, a partir de um único ponto. As faixas são as de tempo deste relatório.</p>
-      <div id="c-ttfb"></div>
-      <p class="takeaway">A home de todos os sites já estava no cache. Na categoria e no post, a primeira requisição montou a página na hora (1,3 a 2,2 s) e a seguinte veio do cache (0,11 a 0,35 s). Hoje cada página fica guardada por 5 minutos, com uma cópia por região da Cloudflare. Se a página não recebe outra visita na mesma região dentro desse prazo, ela é montada de novo.</p>
-      <details class="tv">
-        <summary>Ver os cabeçalhos de cache coletados</summary>
-        <div class="tw"><table id="cache-table"></table></div>
-      </details>
-    </div>
+<section>
+  <div class="sec-head"><span class="eyebrow">Outros problemas</span><h2>O que atrasa a primeira imagem e outros erros</h2></div>
+  <p>Estes arquivos precisam terminar de carregar antes de qualquer coisa aparecer na tela. Ganho estimado no celular: 840 ms. A fonte Maven Pro é baixada duas vezes.</p>
+  <div class="tablewrap"><table class="num2"><thead><tr><th scope=col>Arquivo</th><th scope=col>Tamanho</th></tr></thead><tbody><tr><td><code title="https://fonts.googleapis.com/css?family=Maven+Pro:regular,500,600,700,800,900&amp;display=auto&amp;ver=3.6.1">fonts.googleapis.com/css</code></td><td>1 KiB</td></tr><tr><td><code title="https://fonts.googleapis.com/css?family=Maven+Pro:regular,500,600,700,800,900,300,400&amp;display=swap">fonts.googleapis.com/css</code></td><td>1 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=6.2.5">appszetta.com/wp-content/plugins/contact-form-7/includes/css/styles.c…</code></td><td>1 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/themes/generatepress/assets/css/main.min.css?ver=3.6.1">appszetta.com/wp-content/themes/generatepress/assets/css/main.min.css</code></td><td>5 KiB</td></tr><tr><td><code title="https://appszetta.com/wp-content/uploads/generateblocks/style-global.css?ver=1761590170">appszetta.com/wp-content/uploads/generateblocks/style-global.css</code></td><td>1 KiB</td></tr></tbody></table></div>
+  <div class="grid2">
+    <div class="panel"><h4>Erro que aparece no navegador</h4><ul class="plain"><li><code>❌ Erro ao carregar configuração: SyntaxError: Failed to execute &#x27;json&#x27; on &#x27;Response&#x27;: Unexpected end of JSON input</code></li></ul><p class="muted">Algum script tenta ler uma configuração e recebe uma resposta vazia.</p></div>
+    <div class="panel"><h4>Botão “voltar” recarrega tudo</h4><ul class="plain"><li>The page has an unload handler in the main frame</li><li>The page has an unload handler in a sub frame</li></ul><p class="muted">Ao voltar para a página inicial, o navegador precisa carregar tudo de novo em vez de mostrar na hora.</p></div>
+  </div>
+  <div class="fails">
+    <div class="panel"><h4>Acessibilidade</h4><ul class="plain"><li>Links no texto se distinguem só pela cor</li><li>Links sem nome acessível</li></ul></div>
+    <div class="panel"><h4>Boas práticas</h4><ul class="plain"><li>Imagens exibidas com proporção errada</li><li>Usa cookies de terceiros</li><li>Erros no console do navegador</li><li>Avisos no painel Issues do DevTools</li></ul></div>
+    <div class="panel"><h4>Google (SEO)</h4><ul class="plain"><li>Página sem meta description</li></ul></div>
   </div>
 </section>
 
-<section id="atencao">
-  <div class="wrap">
-    <h2>Pontos de atenção</h2>
-    <p class="lead">O que ainda pode melhorar, do maior para o menor impacto.</p>
-    <div class="att">
-      <article>
-        <span class="ic" aria-hidden="true">✕</span>
-        <h3>Scripts de marketing deixam 3 sites mais lentos no celular</h3>
-        <p>Na certificase.com, kursora.com e newjoinz.com, o Google Tag Manager, o Facebook e o Clarity carregam junto com a página. São 704 a 1.327 KB de scripts de outras empresas, contra 7 a 22 KB do próprio site, e as notas ficam entre 31 e 64. Na funquarks.com, onde o Google Tag Manager espera a primeira interação, a nota fica entre 92 e 97.</p>
-        <p class="do"><b>O que fazer:</b> testar com o time de marketing a mesma espera da funquarks.com nos outros três sites, conferindo se a medição de campanhas continua correta. Os anúncios trazem a receita e continuam. O ganho está em adiar o que não precisa carregar na hora.</p>
-      </article>
-      <article>
-        <span class="ic ni" aria-hidden="true">!</span>
-        <h3>Cache curto em dois sites: a primeira visita espera mais</h3>
-        <p>O cache respondeu só 32,4% das requisições na funquarks.com e 28,2% na kursora.com, contra 69,2% na certificase.com. Quando a página não está no cache, ela leva de 1,3 a 2,2 s para começar a chegar, contra 0,1 a 0,35 s quando está. Na funquarks.com, o servidor recebe 115 requisições a cada 100 de visitantes.</p>
-        <p class="do"><b>O que fazer:</b> guardar as páginas por mais tempo e em um cache único para todas as regiões. A atualização automática quando um post é editado já existe, então isso não deixa conteúdo velho no ar.</p>
-      </article>
-      <article>
-        <span class="ic ni" aria-hidden="true">!</span>
-        <h3>O navegador do visitante guarda as páginas por até 31 dias</h3>
-        <p>Quando a página vem do cache, a Cloudflare manda o navegador guardá-la por 31 dias (<code>max-age=2678400</code>). Quem já visitou o site pode continuar vendo uma versão antiga depois de uma correção.</p>
-        <p class="do"><b>O que fazer:</b> ajustar a configuração da Cloudflare (Browser Cache TTL) para que o navegador sempre confira se há versão nova das páginas.</p>
-      </article>
-      <article>
-        <span class="ic ni" aria-hidden="true">!</span>
-        <h3>Imagens pesadas na certificase.com</h3>
-        <p>A home tem 3,8 MB, e cada imagem PNG pesa de 440 a 700 KB. Isso atrasa o conteúdo principal (LCP de 4,1 s na home).</p>
-        <p class="do"><b>O que fazer:</b> converter as imagens para formatos modernos (WebP ou AVIF) no tamanho em que aparecem.</p>
-      </article>
-      <article>
-        <span class="ic ni" aria-hidden="true">!</span>
-        <h3>Conteúdo que “pula” no post da kursora.com</h3>
-        <p>Um bloco do texto muda de lugar durante o carregamento em 2 dos 3 testes (CLS de 0,27, faixa “ruim”). É a única página das 12 fora da faixa “bom” nesse indicador.</p>
-        <p class="do"><b>O que fazer:</b> reservar o espaço do elemento que entra acima desse bloco.</p>
-      </article>
-      <article>
-        <span class="ic ni" aria-hidden="true">!</span>
-        <h3>newjoinz.com: mais erros e os pedidos mais lentos</h3>
-        <p>A taxa de erro de 0,33% (271 em 7 dias) é a maior dos 4 sites, embora ainda baixa. O p99 de resposta, de 1,07 s, também é o maior, e a consulta de categorias chega a 1,94 s no p99.</p>
-        <p class="do"><b>O que fazer:</b> olhar os erros desse site nos logs do servidor e a consulta de categorias.</p>
-      </article>
-      <article>
-        <span class="ic info" aria-hidden="true">i</span>
-        <h3>Servidor compartilhado com pico de 77,6% de CPU</h3>
-        <p>A máquina nova atende cerca de 40 sites. Os 4 sites headless ocupam pouco dela (0,33 processo em média), mas o pico de 77,6% de CPU é do servidor todo.</p>
-        <p class="do"><b>O que fazer:</b> acompanhar a CPU e a memória da máquina nova nas próximas semanas, agora que a coleta existe.</p>
-      </article>
-      <article>
-        <span class="ic info" aria-hidden="true">i</span>
-        <h3>Medições que faltam</h3>
-        <p>Ficaram indisponíveis: os dados de visitantes reais (Google CrUX), porque exigem uma chave de API; o TTFB p95/p99 da Cloudflare, porque o plano Free não mostra percentis; e a memória e os processos PHP da máquina antiga, que não tinha coleta.</p>
-        <p class="do"><b>O que fazer:</b> criar a chave de API do Google para o próximo relatório trazer a experiência dos visitantes reais.</p>
-      </article>
-    </div>
-  </div>
+<section>
+  <div class="sec-head"><span class="eyebrow">Plano de ação</span><h2>O que fazer, do maior ganho para o menor</h2></div>
+  <ol class="plan">
+    <li><h4>Carregar anúncios e rastreamento depois <span class="tag high">maior ganho</span></h4><p>Anúncios do Google, Tag Manager, pixel do Facebook, adzep e miramidia causam a maior parte dos travamentos. Eles devem começar a carregar só depois que o visitante interagir ou quando o espaço do anúncio aparecer na tela.</p></li>
+    <li><h4>Guardar a página na Cloudflare <span class="tag high">maior ganho</span></h4><p>Hoje cada visita espera cerca de 1 s pelo servidor. Com a página guardada na Cloudflare, a espera cai para menos de 0,1 s, e tudo o que vem depois aparece antes. Visitantes logados e o painel do WordPress continuam sem cache.</p></li>
+    <li><h4>Imagens no tamanho certo <span class="tag high">maior ganho</span></h4><p>Ajustar os blocos de imagem para baixar a versão pequena nas miniaturas e converter as imagens para WebP. Só as duas primeiras miniaturas pesam quase 3 MB no computador.</p></li>
+    <li><h4>Guardar arquivos por 1 ano <span class="tag mid">ganho médio</span></h4><p>Configurar imagens, estilos e scripts do site para ficarem guardados no navegador por 1 ano, em vez de 1 a 12 horas.</p></li>
+    <li><h4>Fonte carregando uma vez só <span class="tag mid">ganho médio</span></h4><p>Remover o pedido duplicado da fonte Maven Pro, baixar só os pesos usados e mostrar o texto enquanto a fonte carrega.</p></li>
+    <li><h4>Corrigir o erro e liberar o botão “voltar” <span class="tag low">ganho menor</span></h4><p>Achar o script que lê a configuração vazia e trocar o código que impede o navegador de guardar a página ao sair.</p></li>
+    <li><h4>Ajustes de acessibilidade e Google <span class="tag low">ganho menor</span></h4><p>Escrever a descrição da página para o Google, dar nome aos links que só têm imagem e diferenciar links no texto por algo além da cor.</p></li>
+  </ol>
 </section>
 
-<section id="glossario">
-  <div class="wrap">
-    <h2>Glossário</h2>
-    <dl class="gloss">
-      <dt>Core Web Vitals</dt><dd>As métricas do Google para a experiência do visitante: LCP, INP e CLS.</dd>
-      <dt>Faixas de cor</dt><dd>Métricas de tempo (LCP, FCP, TTFB, TBT): bom até 5 s, precisa melhorar até 8 s e ruim acima de 8 s. CLS e nota Lighthouse: faixas oficiais do Google.</dd>
-      <dt>LCP</dt><dd>Quanto tempo o conteúdo principal leva para aparecer.</dd>
-      <dt>INP</dt><dd>Quanto a página demora para reagir a um toque ou clique.</dd>
-      <dt>CLS</dt><dd>Quanto o conteúdo “pula” de lugar enquanto carrega. Bom: até 0,1. Ruim: acima de 0,25.</dd>
-      <dt>FCP</dt><dd>Quanto tempo até aparecer o primeiro texto ou imagem.</dd>
-      <dt>TTFB</dt><dd>Quanto tempo até o servidor começar a enviar a página.</dd>
-      <dt>TBT</dt><dd>Quanto tempo a página fica travada processando scripts, sem responder.</dd>
-      <dt>Nota Lighthouse</dt><dd>A nota de 0 a 100 do teste de velocidade do Google. Bom: 90 ou mais. Ruim: abaixo de 50.</dd>
-      <dt>p50, p95, p99</dt><dd>O tempo dentro do qual ficam 50%, 95% e 99% das respostas. O p99 mostra os casos mais lentos.</dd>
-      <dt>p75</dt><dd>O valor que 75% das visitas atingem. É o que o Google usa para avaliar os Core Web Vitals.</dd>
-      <dt>Laboratório x campo</dt><dd>Teste simulado em um celular padrão x medição feita em visitantes reais.</dd>
-      <dt>CrUX</dt><dd>A base do Google com a experiência de visitantes reais do Chrome, numa janela de 28 dias.</dd>
-      <dt>Cache</dt><dd>Uma cópia pronta da página, guardada perto do visitante e entregue sem acionar o servidor.</dd>
-      <dt>Cache hit ratio</dt><dd>A porcentagem de requisições respondidas direto pelo cache.</dd>
-      <dt>Edge (Cloudflare)</dt><dd>A rede de servidores espalhados pelo mundo que entrega o site perto do visitante.</dd>
-      <dt>Worker</dt><dd>O programa na Cloudflare que monta as páginas do site (Astro).</dd>
-      <dt>Origem</dt><dd>O servidor WordPress, onde ficam os textos e as imagens.</dd>
-      <dt>REST API</dt><dd>O canal por onde o site pede os textos ao WordPress.</dd>
-      <dt>Endpoint</dt><dd>Cada tipo de pedido à REST API, por exemplo a lista de posts.</dd>
-      <dt>Requisição</dt><dd>Cada arquivo ou dado que o navegador ou o Worker pede.</dd>
-      <dt>Erro 5xx</dt><dd>Uma falha do servidor ao responder.</dd>
-      <dt>Processo PHP (PHP-FPM)</dt><dd>Cada “atendente” do servidor WordPress. O número mostra quantos trabalham ao mesmo tempo.</dd>
-      <dt>CPU e memória</dt><dd>Quanto do processador e da memória do servidor está em uso.</dd>
-      <dt>Peso da página</dt><dd>O total de dados baixados para abrir a página.</dd>
-      <dt>JS próprio x terceiros</dt><dd>Código do próprio site x código de outras empresas (anúncios, Google Tag Manager, Facebook, Clarity).</dd>
-    </dl>
-  </div>
-</section>
-</main>
-
-<footer>
-  <div class="wrap">
-    <h2>Fontes e janelas</h2>
-    <ul>
-      <li><b>Servidor, por site</b> (requisições, p50/p95/p99, erros 5xx e processos PHP): logs do nginx separados por site, de 28/10 a 03/11/2026, no horário de Brasília. O tempo de resposta é o <code>request_time</code> do nginx. Os processos PHP por site são estimados pelo tempo de upstream (média e pico de 1 min).</li>
-      <li><b>CPU do servidor</b>: AWS CloudWatch, com média de 10 min; o pico é a maior média de 5 min. <b>Memória e processos PHP-FPM</b>: Prometheus, desde 01/11, ~20h24. Na máquina A, memória e processos estão indisponíveis.</li>
-      <li><b>Cloudflare</b> (cache, requisições, dados, subrequisições do Worker): Cloudflare Analytics, de 28/10 a 03/11/2026, com dados amostrados (estimativa da própria Cloudflare). O TTFB p95/p99 está indisponível, porque as zonas estão no plano Free.</li>
-      <li><b>REST API</b>: logs do nginx, os 10 endpoints mais chamados de cada site, de 28/10 a 03/11/2026.</li>
-      <li><b>Laboratório</b>: Lighthouse 13.6.0, celular simulado (rede 4G lenta e processador mais lento), só desempenho, 3 execuções por página e mediana de cada métrica. Coletado em 04/11/2026, das 13h16 às 13h28 (Brasília), a partir de uma única máquina. Os números servem para comparar os sites entre si e podem diferir dos do PageSpeed Insights.</li>
-      <li><b>Cabeçalhos de cache e TTFB da primeira e da segunda visita</b>: duas requisições seguidas a cada URL, em 04/11/2026, ~13h14 (Brasília), a partir de um único ponto.</li>
-      <li><b>Visitantes reais (Google CrUX)</b>: janela fixa de 28 dias da própria ferramenta, valores no p75. Ficou indisponível neste relatório, porque a consulta exige uma chave de API do Google.</li>
-      <li><b>Faixas de cor</b>: nas métricas de tempo (LCP, FCP, TTFB e TBT), o relatório usa faixas próprias: bom até 5 s, precisa melhorar até 8 s e ruim acima de 8 s. As faixas do Google são mais rígidas (bom até 2,5 s no LCP, 1,8 s no FCP, 0,8 s no TTFB e 200 ms no TBT). O CLS e a nota Lighthouse seguem as faixas do Google.</li>
-      <li><b>Janelas</b>: 7 dias (28/10 a 03/11/2026) para servidor, Cloudflare e REST API. 28 dias seria a janela do CrUX. Laboratório e cabeçalhos são medições pontuais de 04/11/2026.</li>
-    </ul>
-  </div>
-</footer>
-
-<script>
-const SITES = ['funquarks', 'certificase', 'kursora', 'newjoinz'];
-const PAGES = ['home', 'categoria', 'post'];
-const PAGE_LABEL = { home: 'Home', categoria: 'Categoria', post: 'Post' };
-const URLS = {
-  funquarks: { home: '/', categoria: '/category/moda/', post: '/vale-a-pena-participar-no-centro-de-provas-gratuitas-da-shein/' },
-  certificase: { home: '/', categoria: '/category/dating-apps/', post: '/alegerea-celui-mai-bun-site-de-dating-serios-pentru-iubire-adevarata/' },
-  kursora: { home: '/', categoria: '/category/fashion/', post: '/evaluating-the-shein-free-trial-center-for-smart-shoppers/' },
-  newjoinz: { home: '/', categoria: '/category/apps/', post: '/choose-tinder-alternatives-for-serious-dating/' },
-};
-const LAB = [{"site":"certificase","page":"categoria","score":53,"tbt":1975,"lcp":4.7,"fcp":1.4,"cls":0.01,"kb":2352,"reqs":53,"ownJs":7,"thirdJs":704},{"site":"certificase","page":"home","score":56,"tbt":1937,"lcp":4.1,"fcp":1.8,"cls":0,"kb":3928,"reqs":66,"ownJs":7,"thirdJs":704},{"site":"certificase","page":"post","score":40,"tbt":4195,"lcp":4.2,"fcp":4.2,"cls":0,"kb":1722,"reqs":122,"ownJs":22,"thirdJs":1224},{"site":"funquarks","page":"categoria","score":94,"tbt":70,"lcp":2.5,"fcp":1.3,"cls":0,"kb":420,"reqs":18,"ownJs":7,"thirdJs":10},{"site":"funquarks","page":"home","score":92,"tbt":185,"lcp":2.3,"fcp":1.7,"cls":0,"kb":953,"reqs":28,"ownJs":7,"thirdJs":10},{"site":"funquarks","page":"post","score":97,"tbt":80,"lcp":1.5,"fcp":1.5,"cls":0,"kb":276,"reqs":22,"ownJs":22,"thirdJs":74},{"site":"kursora","page":"categoria","score":56,"tbt":1822,"lcp":4.2,"fcp":1.1,"cls":0,"kb":1101,"reqs":50,"ownJs":7,"thirdJs":714},{"site":"kursora","page":"home","score":59,"tbt":1624,"lcp":3.3,"fcp":1.6,"cls":0,"kb":1448,"reqs":58,"ownJs":7,"thirdJs":714},{"site":"kursora","page":"post","score":31,"tbt":3871,"lcp":3.6,"fcp":3.6,"cls":0.268,"kb":1846,"reqs":178,"ownJs":22,"thirdJs":1327},{"site":"newjoinz","page":"categoria","score":64,"tbt":1422,"lcp":3.2,"fcp":1.4,"cls":0,"kb":1032,"reqs":49,"ownJs":7,"thirdJs":715},{"site":"newjoinz","page":"home","score":53,"tbt":2058,"lcp":5.1,"fcp":1.5,"cls":0,"kb":1258,"reqs":57,"ownJs":7,"thirdJs":715},{"site":"newjoinz","page":"post","score":53,"tbt":4203,"lcp":3,"fcp":3,"cls":0,"kb":1631,"reqs":170,"ownJs":22,"thirdJs":1245}];
-const ORIGIN = {
-  funquarks: { req: 205314, p50: 200, p95: 466, p99: 664, err: 32, errPct: 0.016, wAvg: 0.07, wPeak: 7.52 },
-  certificase: { req: 490007, p50: 228, p95: 418, p99: 687, err: 507, errPct: 0.103, wAvg: 0.19, wPeak: 16.67 },
-  kursora: { req: 162470, p50: 144, p95: 293, p99: 440, err: 6, errPct: 0.004, wAvg: 0.04, wPeak: 2.04 },
-  newjoinz: { req: 81205, p50: 221, p95: 530, p99: 1072, err: 271, errPct: 0.334, wAvg: 0.03, wPeak: 5.57 },
-};
-const EDGE = {
-  funquarks: { req: 178951, hit: 57914, hitPct: 32.4, origin: 205032, ratio: 1.15, sub: 318728, subHitPct: 33.2, gbEdge: 5.093316132, gbOrigin: 1.216093370 },
-  certificase: { req: 2801902, hit: 1939642, hitPct: 69.2, origin: 484446, ratio: 0.17, sub: 2485883, subHitPct: 80.0, gbEdge: 37.564733671, gbOrigin: 6.584211765 },
-  kursora: { req: 250202, hit: 70568, hitPct: 28.2, origin: 162197, ratio: 0.65, sub: 242823, subHitPct: 30.7, gbEdge: 13.417768796, gbOrigin: 3.718891647 },
-  newjoinz: { req: 150207, hit: 90536, hitPct: 60.3, origin: 80938, ratio: 0.54, sub: 152333, subHitPct: 45.8, gbEdge: 6.384306540, gbOrigin: 0.810558074 },
-};
-const SERVERS = {
-  a: { cpuAvg: 10.74, cpuPeak: 58.66, memAvg: null, memPeak: null },
-  b: { cpuAvg: 17.35, cpuPeak: 77.58, memAvg: 30.74, memPeak: 36.5 },
-};
-const REST = {
-  funquarks: { total: 158211, top: [['/wp/v2/posts', 91228, 534, 691], ['/headless/v1/ad-head', 15394, 303, 496], ['/wp/v2/tags', 12644, 391, 523], ['/headless/v1/site', 10018, 323, 474], ['/wp/v2/pages', 8621, 318, 808], ['/wp/v2/categories', 7605, 446, 782], ['/wp/v2/funil', 5915, 375, 1045], ['/wp/v2/novela', 5904, 339, 1158], ['/oembed/1.0/embed', 272, 251, 297], ['/wp/v2/users/me', 131, 236, 325]] },
-  certificase: { total: 186547, top: [['/wp/v2/posts', 95900, 583, 812], ['/wp/v2/pages', 19523, 355, 616], ['/wp/v2/tags', 16177, 416, 576], ['/headless/v1/ad-head', 14070, 391, 1494], ['/wp/v2/funil', 12635, 413, 802], ['/wp/v2/novela', 12601, 379, 707], ['/wp/v2/categories', 7516, 504, 1003], ['/headless/v1/site', 6268, 403, 581], ['/oembed/1.0/embed', 1236, 258, 1873], ['/wp/v2/posts/{id}', 272, 281, 1060]] },
-  kursora: { total: 8276, top: [['/wp/v2/posts', 4077, 498, 673], ['/wp/v2/tags', 1200, 168, 328], ['/headless/v1/ad-head', 769, 445, 607], ['/oembed/1.0/embed', 748, 195, 306], ['/wp/v2/categories', 253, 332, 422], ['/wp/v2/tags/{id}', 222, 166, 208], ['/wp/v2/posts/{id}', 181, 989, 1619], ['/wp/v2/users/me', 155, 167, 207], ['/headless/v1/site', 127, 260, 376], ['/wp/v2/pages', 73, 295, 412]] },
-  newjoinz: { total: 53284, top: [['/wp/v2/posts', 25923, 633, 1121], ['/wp/v2/pages', 6680, 320, 1009], ['/wp/v2/funil', 4325, 378, 1287], ['/wp/v2/novela', 4322, 361, 1287], ['/headless/v1/ad-head', 4139, 401, 1506], ['/headless/v1/site', 2850, 371, 627], ['/wp/v2/tags', 2534, 246, 425], ['/wp/v2/categories', 2011, 560, 1939], ['/wp/v2/users/me', 160, 293, 328], ['/wp/v2/tags/{id}', 111, 315, 327]] },
-};
-const CACHE = [["funquarks","home",1,"HIT",172,"public, max-age=2678400, s-maxage=300",710],["funquarks","home",2,"HIT",173,"public, max-age=2678400, s-maxage=300",174],["funquarks","categoria",1,"—",null,"public, s-maxage=300",1580],["funquarks","categoria",2,"HIT",0,"public, max-age=2678400, s-maxage=300",120],["funquarks","post",1,"—",null,"public, s-maxage=300",1551],["funquarks","post",2,"HIT",0,"public, max-age=2678400, s-maxage=300",124],["certificase","home",1,"HIT",117,"public, max-age=2678400, s-maxage=300",145],["certificase","home",2,"HIT",117,"public, max-age=2678400, s-maxage=300",110],["certificase","categoria",1,"—",null,"public, s-maxage=300",1409],["certificase","categoria",2,"HIT",0,"public, max-age=2678400, s-maxage=300",211],["certificase","post",1,"—",null,"public, s-maxage=300",1639],["certificase","post",2,"HIT",0,"public, max-age=2678400, s-maxage=300",122],["kursora","home",1,"HIT",60,"public, max-age=2678400, s-maxage=300",169],["kursora","home",2,"HIT",60,"public, max-age=2678400, s-maxage=300",106],["kursora","categoria",1,"—",null,"public, s-maxage=300",1341],["kursora","categoria",2,"HIT",0,"public, max-age=2678400, s-maxage=300",346],["kursora","post",1,"—",null,"public, s-maxage=300",1542],["kursora","post",2,"HIT",0,"public, max-age=2678400, s-maxage=300",145],["newjoinz","home",1,"HIT",57364,"public, max-age=2678400, s-maxage=300",114],["newjoinz","home",2,"HIT",57364,"public, max-age=2678400, s-maxage=300",108],["newjoinz","categoria",1,"—",null,"public, s-maxage=300",2167],["newjoinz","categoria",2,"HIT",0,"public, max-age=2678400, s-maxage=300",113],["newjoinz","post",1,"—",null,"public, s-maxage=300",1521],["newjoinz","post",2,"HIT",0,"public, max-age=2678400, s-maxage=300",183]];
-
-const $ = (tag, cls, text) => {
-  const node = document.createElement(tag);
-  if (cls) node.className = cls;
-  if (text != null) node.textContent = text;
-  return node;
-};
-const nf = (v, d = 0) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
-const compact = (v) => v.toLocaleString('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
-const ms = (v) => (v >= 1000 ? `${nf(v / 1000, 2)} s` : `${nf(v)} ms`);
-const sec = (v) => `${nf(v, 1)} s`;
-const pct = (v, d = 1) => `${nf(v, d)}%`;
-const site = (s) => `${s}.com`;
-const lab = (s, p) => LAB.find((d) => d.site === s && d.page === p);
-
-const STATUS = { good: ['✓', 'Bom'], ni: ['!', 'Precisa melhorar'], poor: ['✕', 'Ruim'] };
-const STATUS_COLOR = { good: 'var(--good)', ni: 'var(--warn)', poor: 'var(--bad)' };
-const statusOf = (v, bands) => (v <= bands.good ? 'good' : v <= bands.ni ? 'ni' : 'poor');
-const scoreStatus = (v) => (v >= 90 ? 'good' : v >= 50 ? 'ni' : 'poor');
-
-function chip(st) {
-  const node = $('span', `chip ${st}`);
-  node.append($('i', null, STATUS[st][0]), STATUS[st][1]);
-  return node;
-}
-
-function legend(items) {
-  const node = $('div', 'legend');
-  for (const [name, color, kind] of items) {
-    const item = $('span');
-    const sw = $('span', kind === 'line' ? 'sw line' : 'sw');
-    if (kind !== 'line') sw.style.background = color;
-    item.append(sw, name);
-    node.append(item);
-  }
-  return node;
-}
-
-function bandLegend(bands, fmt) {
-  return legend([
-    [`Bom: até ${fmt(bands.good)}`, 'var(--good-bg)'],
-    [`Precisa melhorar: até ${fmt(bands.ni)}`, 'var(--ni-bg)'],
-    [`Ruim: acima de ${fmt(bands.ni)}`, 'var(--poor-bg)'],
-  ]);
-}
-
-function tableView(head, rows, summary = 'Ver os números em tabela') {
-  const details = $('details', 'tv');
-  details.append($('summary', null, summary));
-  const wrap = $('div', 'tw');
-  wrap.append(buildTable(head, rows));
-  details.append(wrap);
-  return details;
-}
-
-function buildTable(head, rows, table = $('table')) {
-  const thead = $('thead');
-  const hr = $('tr');
-  head.forEach((h, i) => hr.append($('th', i ? 'n' : null, h)));
-  thead.append(hr);
-  const tbody = $('tbody');
-  for (const r of rows) {
-    const tr = $('tr');
-    r.forEach((c, i) => tr.append($('td', i ? 'n' : null, c)));
-    tbody.append(tr);
-  }
-  table.append(thead, tbody);
-  return table;
-}
-
-function chart(id, { rows, max, bands, bandFmt, legendItems, ref, table }) {
-  const root = document.getElementById(id);
-  if (ref != null) root.classList.add('has-ref');
-  if (legendItems) root.append(legend(legendItems));
-  if (bands) root.append(bandLegend(bands, bandFmt));
-  let group;
-  for (const r of rows) {
-    if (r.group && r.group !== group) {
-      group = r.group;
-      const heading = $('div', 'grp', r.group);
-      if (r.groupSub) heading.append($('small', null, r.groupSub));
-      root.append(heading);
-    }
-    const row = $('div', 'row');
-    const label = $('div', 'lab', r.label);
-    if (r.sub) label.append($('small', null, r.sub));
-    const track = $('div', 'track');
-    if (bands) {
-      const zones = $('div', 'zones');
-      for (const [key, width] of [['good', bands.good], ['ni', bands.ni - bands.good], ['poor', max - bands.ni]]) {
-        const zone = $('span');
-        zone.style.width = `${(width / max) * 100}%`;
-        zone.style.background = `var(--${key}-bg)`;
-        zones.append(zone);
-      }
-      track.append(zones);
-    }
-    if (ref != null) {
-      const line = $('div', 'ref');
-      line.style.left = `${(ref / max) * 100}%`;
-      track.append(line);
-    }
-    const st = bands && r.value != null ? statusOf(r.value, bands) : null;
-    const segs = r.segs ?? (r.value == null ? [] : [{ value: r.value, color: st ? STATUS_COLOR[st] : r.color ?? 'var(--s1)' }]);
-    const total = segs.reduce((sum, s) => sum + s.value, 0);
-    const bar = $('div', 'bar');
-    bar.style.width = `${(total / max) * 100}%`;
-    for (const s of segs) {
-      const seg = $('span', 'seg');
-      seg.style.flex = `${total ? s.value / total : 0} 1 0`;
-      seg.style.background = s.color;
-      seg.tabIndex = 0;
-      seg.dataset.v = s.tipValue ?? r.text;
-      seg.dataset.l = s.tipLabel ?? r.tipLabel ?? [r.group, r.label].filter(Boolean).join(' · ');
-      bar.append(seg);
-    }
-    track.append(bar);
-    const val = $('span', 'val', r.value === null ? null : r.text);
-    if (r.value === null) val.append(chipNa());
-    if (st) val.append(chip(st));
-    track.append(val);
-    row.append(label, track);
-    root.append(row);
-  }
-  if (table) root.append(tableView(...table));
-}
-
-function chipNa() {
-  return $('span', 'chip na', 'indisponível');
-}
-
-document.getElementById('status-legend').append(
-  'Cores por faixa:', chip('good'), chip('ni'), chip('poor'),
-);
-
-function labRows(metric, fmt, name) {
-  return SITES.flatMap((s) => PAGES.map((p) => {
-    const value = lab(s, p)[metric];
-    return { group: site(s), label: PAGE_LABEL[p], value, text: fmt(value), tipLabel: `${name} · ${site(s)} · ${PAGE_LABEL[p]}` };
-  }));
-}
-
-function bandTable(metric, fmt, name, bands) {
-  return [['Site', 'Página', name, 'Faixa'], SITES.flatMap((s) => PAGES.map((p) => {
-    const value = lab(s, p)[metric];
-    return [site(s), PAGE_LABEL[p], fmt(value), STATUS[statusOf(value, bands)][1]];
-  }))];
-}
-
-const BANDS = {
-  lcp: { good: 5, ni: 8 },
-  cls: { good: 0.1, ni: 0.25 },
-  fcp: { good: 5, ni: 8 },
-  tbt: { good: 5000, ni: 8000 },
-  ttfb: { good: 5000, ni: 8000 },
-};
-const cls = (v) => nf(v, 2);
-const msAsSec = (v) => sec(v / 1000);
-
-chart('c-lcp', { rows: labRows('lcp', sec, 'LCP'), max: 10, bands: BANDS.lcp, bandFmt: sec, table: bandTable('lcp', sec, 'LCP', BANDS.lcp) });
-chart('c-cls', { rows: labRows('cls', cls, 'CLS'), max: 0.45, bands: BANDS.cls, bandFmt: cls, table: bandTable('cls', cls, 'CLS', BANDS.cls) });
-chart('c-fcp', { rows: labRows('fcp', sec, 'FCP'), max: 10, bands: BANDS.fcp, bandFmt: sec, table: bandTable('fcp', sec, 'FCP', BANDS.fcp) });
-chart('c-tbt', { rows: labRows('tbt', ms, 'TBT'), max: 10000, bands: BANDS.tbt, bandFmt: msAsSec, table: bandTable('tbt', ms, 'TBT', BANDS.tbt) });
-
-const scoreTable = document.getElementById('score-table');
-const scoreHead = $('thead');
-const scoreHeadRow = $('tr');
-scoreHeadRow.append($('th', null, 'Site'), ...PAGES.map((p) => $('th', null, PAGE_LABEL[p])));
-scoreHead.append(scoreHeadRow);
-const scoreBody = $('tbody');
-for (const s of SITES) {
-  const tr = $('tr');
-  const th = $('th', null, site(s));
-  th.scope = 'row';
-  tr.append(th);
-  for (const p of PAGES) {
-    const { score } = lab(s, p);
-    const st = scoreStatus(score);
-    const td = $('td', st);
-    td.append($('span', 'score', String(score)), chip(st));
-    tr.append(td);
-  }
-  scoreBody.append(tr);
-}
-scoreTable.append(scoreHead, scoreBody);
-
-const kb = (v) => `${nf(v)} KB`;
-chart('c-weight', {
-  legendItems: [['JS do próprio site', 'var(--s1)'], ['JS de terceiros (marketing e anúncios)', 'var(--s2)'], ['Imagens, CSS, fontes e HTML', 'var(--s3)']],
-  max: 6600,
-  rows: SITES.flatMap((s) => PAGES.map((p) => {
-    const d = lab(s, p);
-    const other = d.kb - d.ownJs - d.thirdJs;
-    const where = `${site(s)} · ${PAGE_LABEL[p]}`;
-    return {
-      group: site(s),
-      label: PAGE_LABEL[p],
-      sub: `${d.reqs} requisições`,
-      text: kb(d.kb),
-      segs: [
-        { value: d.ownJs, color: 'var(--s1)', tipValue: kb(d.ownJs), tipLabel: `JS do próprio site · ${where}` },
-        { value: d.thirdJs, color: 'var(--s2)', tipValue: kb(d.thirdJs), tipLabel: `JS de terceiros · ${where}` },
-        { value: other, color: 'var(--s3)', tipValue: kb(other), tipLabel: `Imagens, CSS, fontes e HTML · ${where}` },
-      ],
-    };
-  })),
-  table: [['Site', 'Página', 'Peso total', 'Requisições', 'JS próprio', 'JS de terceiros', 'Demais arquivos'],
-    SITES.flatMap((s) => PAGES.map((p) => {
-      const d = lab(s, p);
-      return [site(s), PAGE_LABEL[p], kb(d.kb), nf(d.reqs), kb(d.ownJs), kb(d.thirdJs), kb(d.kb - d.ownJs - d.thirdJs)];
-    }))],
-});
-
-buildTable(['Site', 'Página', 'URL'], SITES.flatMap((s) => PAGES.map((p) => [site(s), PAGE_LABEL[p], `https://${site(s)}${URLS[s][p]}`])), document.getElementById('pages-table'));
-
-const totalReq = SITES.reduce((sum, s) => sum + EDGE[s].req, 0);
-const totalHit = SITES.reduce((sum, s) => sum + EDGE[s].hit, 0);
-const cacheRows = [...SITES.map((s) => ({ label: site(s), hit: EDGE[s].hit, req: EDGE[s].req, hitPct: EDGE[s].hitPct })),
-  { label: 'Os 4 sites', hit: totalHit, req: totalReq, hitPct: (totalHit / totalReq) * 100 }];
-chart('c-cache', {
-  legendItems: [['Respondidas pelo cache', 'var(--s1)'], ['Passaram pelo Worker', 'var(--rest)']],
-  max: 160,
-  rows: cacheRows.map((r) => ({
-    label: r.label,
-    sub: `${compact(r.req)} requisições`,
-    text: `${pct(r.hitPct)} do cache`,
-    segs: [
-      { value: r.hitPct, color: 'var(--s1)', tipValue: `${pct(r.hitPct)} · ${nf(r.hit)}`, tipLabel: `Respondidas pelo cache · ${r.label}` },
-      { value: 100 - r.hitPct, color: 'var(--rest)', tipValue: `${pct(100 - r.hitPct)} · ${nf(r.req - r.hit)}`, tipLabel: `Passaram pelo Worker · ${r.label}` },
-    ],
-  })),
-  table: [['Site', 'Requisições de visitantes', 'Do cache', 'Cache hit ratio', 'Subrequisições do Worker', 'Delas, do cache'],
-    [...SITES.map((s) => [site(s), nf(EDGE[s].req), nf(EDGE[s].hit), pct(EDGE[s].hitPct), nf(EDGE[s].sub), pct(EDGE[s].subHitPct)]),
-      ['Os 4 sites', nf(totalReq), nf(totalHit), pct((totalHit / totalReq) * 100), '', '']]],
-});
-
-chart('c-req', {
-  legendItems: [['Visitantes na Cloudflare', 'var(--s1)'], ['Chegaram ao servidor', 'var(--s2)']],
-  max: 4200000,
-  rows: SITES.flatMap((s) => [
-    { group: site(s), groupSub: `${nf(EDGE[s].ratio * 100)} no servidor a cada 100 de visitantes`, label: 'Visitantes', value: EDGE[s].req, text: compact(EDGE[s].req), color: 'var(--s1)', tipLabel: `Visitantes na Cloudflare · ${site(s)}` },
-    { group: site(s), label: 'Servidor', value: EDGE[s].origin, text: compact(EDGE[s].origin), color: 'var(--s2)', tipLabel: `Chegaram ao servidor · ${site(s)}` },
-  ]).map((r) => ({ ...r, segs: [{ value: r.value, color: r.color, tipValue: nf(r.value), tipLabel: r.tipLabel }] })),
-  table: [['Site', 'Visitantes na Cloudflare', 'Chegaram ao servidor', 'No servidor a cada 100'],
-    SITES.map((s) => [site(s), nf(EDGE[s].req), nf(EDGE[s].origin), nf(EDGE[s].ratio * 100)])],
-});
-
-const gb = (v) => `${nf(v, 1)} GB`;
-chart('c-bytes', {
-  legendItems: [['Entregues aos visitantes', 'var(--s1)'], ['Saíram do servidor', 'var(--s2)']],
-  max: 55,
-  rows: SITES.flatMap((s) => [
-    { group: site(s), groupSub: `${pct((EDGE[s].gbOrigin / EDGE[s].gbEdge) * 100, 0)} veio do servidor`, label: 'Entregues', value: EDGE[s].gbEdge, color: 'var(--s1)', name: 'Entregues aos visitantes' },
-    { group: site(s), label: 'Do servidor', value: EDGE[s].gbOrigin, color: 'var(--s2)', name: 'Saíram do servidor' },
-  ]).map((r) => ({ ...r, text: gb(r.value), segs: [{ value: r.value, color: r.color, tipValue: gb(r.value), tipLabel: `${r.label} · ${r.group}` }] })),
-  table: [['Site', 'Entregues pela Cloudflare', 'Saíram do servidor', 'Parte do servidor'],
-    SITES.map((s) => [site(s), gb(EDGE[s].gbEdge), gb(EDGE[s].gbOrigin), pct((EDGE[s].gbOrigin / EDGE[s].gbEdge) * 100)])],
-});
-
-const PCTL = [['p50', 'var(--s1)'], ['p95', 'var(--s2)'], ['p99', 'var(--s3)']];
-chart('c-resp', {
-  legendItems: PCTL,
-  max: 1600,
-  rows: SITES.flatMap((s) => PCTL.map(([k, color]) => ({
-    group: site(s), label: k, text: ms(ORIGIN[s][k]),
-    segs: [{ value: ORIGIN[s][k], color, tipValue: ms(ORIGIN[s][k]), tipLabel: `Resposta do servidor, ${k} · ${site(s)}` }],
-  }))),
-  table: [['Site', 'Requisições (7 dias)', 'Média por segundo', 'p50', 'p95', 'p99'],
-    SITES.map((s) => [site(s), nf(ORIGIN[s].req), nf(ORIGIN[s].req / 604800, 2), ms(ORIGIN[s].p50), ms(ORIGIN[s].p95), ms(ORIGIN[s].p99)])],
-});
-
-chart('c-5xx', {
-  max: 0.6,
-  rows: SITES.map((s) => ({
-    label: site(s), sub: `${nf(ORIGIN[s].req)} requisições`, value: ORIGIN[s].errPct,
-    text: `${pct(ORIGIN[s].errPct, 3)} · ${nf(ORIGIN[s].err)} erros`,
-  })),
-  table: [['Site', 'Requisições', 'Erros 5xx', 'Taxa'], SITES.map((s) => [site(s), nf(ORIGIN[s].req), nf(ORIGIN[s].err), pct(ORIGIN[s].errPct, 3)])],
-});
-
-chart('c-workers', {
-  legendItems: [['Média', 'var(--s1)'], ['Pior minuto', 'var(--s2)']],
-  max: 25,
-  rows: SITES.flatMap((s) => [['Média', 'wAvg', 'var(--s1)'], ['Pior minuto', 'wPeak', 'var(--s2)']].map(([label, key, color]) => ({
-    group: site(s), label, text: nf(ORIGIN[s][key], 2),
-    segs: [{ value: ORIGIN[s][key], color, tipValue: `${nf(ORIGIN[s][key], 2)} processos`, tipLabel: `${label} · ${site(s)}` }],
-  }))),
-  table: [['Site', 'Média', 'Pior minuto'], SITES.map((s) => [site(s), nf(ORIGIN[s].wAvg, 2), nf(ORIGIN[s].wPeak, 2)])],
-});
-
-for (const key of ['a', 'b']) {
-  const srv = SERVERS[key];
-  chart(`c-srv-${key}`, {
-    max: 125,
-    rows: [['CPU · média', srv.cpuAvg], ['CPU · pico', srv.cpuPeak], ['Memória · média', srv.memAvg], ['Memória · pico', srv.memPeak]]
-      .map(([label, value]) => ({ label, value, text: value == null ? null : pct(value) })),
-  });
-}
-
-chart('c-rest', {
-  legendItems: [['p95', 'var(--s1)'], ['p99', 'var(--s2)']],
-  max: 1500,
-  rows: SITES.flatMap((s) => {
-    const [, calls, p95, p99] = REST[s].top[0];
-    const share = `${pct((calls / REST[s].total) * 100, 0)} das chamadas à API (${nf(calls)})`;
-    return [['p95', p95, 'var(--s1)'], ['p99', p99, 'var(--s2)']].map(([label, value, color]) => ({
-      group: site(s), groupSub: share, label, text: ms(value),
-      segs: [{ value, color, tipValue: ms(value), tipLabel: `/wp/v2/posts, ${label} · ${site(s)}` }],
-    }));
-  }),
-});
-buildTable(['Site', 'Endpoint', 'Chamadas', 'p95', 'p99'],
-  SITES.flatMap((s) => REST[s].top.map(([endpoint, calls, p95, p99]) => [site(s), endpoint, nf(calls), ms(p95), ms(p99)])),
-  document.getElementById('rest-table'));
-
-const ttfb = (s, p, req) => CACHE.find((c) => c[0] === s && c[1] === p && c[2] === req)[6];
-chart('c-ttfb', {
-  max: 10000,
-  bands: BANDS.ttfb,
-  bandFmt: msAsSec,
-  rows: SITES.flatMap((s) => ['categoria', 'post'].flatMap((p) => [
-    { group: site(s), label: `${PAGE_LABEL[p]} · 1ª`, sub: 'sem cache', value: ttfb(s, p, 1), text: ms(ttfb(s, p, 1)) },
-    { group: site(s), label: `${PAGE_LABEL[p]} · 2ª`, sub: 'do cache', value: ttfb(s, p, 2), text: ms(ttfb(s, p, 2)) },
-  ])),
-  table: [['Site', 'Página', '1ª requisição', '2ª requisição'],
-    SITES.flatMap((s) => ['categoria', 'post'].map((p) => [site(s), PAGE_LABEL[p], ms(ttfb(s, p, 1)), ms(ttfb(s, p, 2))]))],
-});
-buildTable(['Site', 'Página', 'Req.', 'cf-cache-status', 'age (s)', 'cache-control', 'TTFB'],
-  CACHE.map(([s, p, req, status, age, cc, t]) => [site(s), PAGE_LABEL[p], String(req), status, age == null ? '—' : nf(age), cc, ms(t)]),
-  document.getElementById('cache-table'));
-
-const tip = document.getElementById('tip');
-function showTip(event) {
-  const target = event.target.closest?.('[data-v]');
-  if (!target) return;
-  tip.replaceChildren($('strong', null, target.dataset.v), $('span', null, target.dataset.l));
-  tip.hidden = false;
-  const rect = target.getBoundingClientRect();
-  const left = Math.min(window.innerWidth - tip.offsetWidth - 8, Math.max(8, rect.left + rect.width / 2 - tip.offsetWidth / 2));
-  const above = rect.top - tip.offsetHeight - 8;
-  tip.style.left = `${left}px`;
-  tip.style.top = `${above < 8 ? rect.bottom + 8 : above}px`;
-}
-const hideTip = () => { tip.hidden = true; };
-document.addEventListener('pointerover', showTip);
-document.addEventListener('focusin', showTip);
-document.addEventListener('pointerout', (event) => { if (event.target.closest?.('[data-v]')) hideTip(); });
-document.addEventListener('focusout', hideTip);
-window.addEventListener('scroll', hideTip, { passive: true });
-</script>
+<footer>Medições de laboratório. Cada número é o pior entre 4 execuções por dispositivo. Visitantes reais podem ter resultados melhores ou piores, dependendo do aparelho e da conexão.</footer>
+</div>
 </body>
 </html>
